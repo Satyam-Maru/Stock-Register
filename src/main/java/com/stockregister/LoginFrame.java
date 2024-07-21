@@ -1,0 +1,242 @@
+package com.stockregister;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JPasswordField;
+import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class LoginFrame extends JFrame implements ActionListener {
+
+    static final int frameWidth = 1020, frameHeight = 650;
+
+    static ImageIcon loginFrameLogo = new ImageIcon("src\\main\\java\\com\\stockregister\\Images\\LoginFrameLogo.png");
+    ImageIcon stockRegisterImg = new ImageIcon("src\\main\\java\\com\\stockregister\\Images\\StockRegisterImg.png");
+
+    JPanel mainPanel;
+
+    JLabel stockImgLabel;
+    JLabel warningLabel;
+    JLabel passwordWarner;
+
+    JTextField emailTxtF;
+    JPasswordField passwordTxtF;
+
+    JButton signUpBtn;
+    JButton signInBtn;
+
+    // For Email Validation
+    // -----------------------------------------------------------------------------
+    private final String EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+    private final Pattern emailPattern = Pattern.compile(EMAIL_PATTERN);
+    // -----------------------------------------------------------------------------
+
+    // For Password Validation
+    // -----------------------------------------------------------------------------
+    private final String PASSWORD_PATTERN = "^[\\S]{5,}$";
+    private final Pattern passwordPattern = Pattern.compile(PASSWORD_PATTERN);
+    // -----------------------------------------------------------------------------
+
+    // DS
+    // -----------------------------------------------------------------------------
+    public static HashMap<String, String> users = new HashMap<>();
+    // -----------------------------------------------------------------------------
+
+    LoginFrame(){
+
+        initMainPanel();
+        initFrame();
+    }
+
+
+    private void initFrame() {
+
+        this.setTitle("Login Frame");
+        this.setIconImage(loginFrameLogo.getImage());
+        this.setSize(frameWidth, frameHeight);  // 1020, 650
+        this.setResizable(false);
+        this.setLayout(null);   // managing the layout self
+        this.setLocationRelativeTo(null);   // sets the frame in center of the window
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.getContentPane().setBackground(Color.BLACK);
+        this.add(mainPanel);
+
+        this.setVisible(true);
+    }
+
+    private void initMainPanel() {
+
+        mainPanel = new JPanel();
+        mainPanel.setBounds(170, 80, frameWidth - 170, 420);
+        mainPanel.setLayout(null);
+        mainPanel.setBackground(Color.BLACK);
+
+        // setting the stock register image
+        stockImgLabel = new JLabel();
+        stockImgLabel.setIcon(stockRegisterImg);
+        stockImgLabel.setBounds(-30, -9, 350, 440);
+        mainPanel.add(stockImgLabel);
+
+        setEmailPanel();
+        setPasswordPanel();
+        setButtons();
+        initWarningLabel();
+    }
+
+    private void setEmailPanel(){
+
+        JLabel emailString = new JLabel();
+        emailString.setText("Email");
+        emailString.setBounds(380, 65, 80, 20);
+        emailString.setFont(new Font("Consolas", Font.BOLD, 17));
+        emailString.setForeground(Color.WHITE);
+        mainPanel.add(emailString);
+
+        emailTxtF = new JTextField();
+        emailTxtF.setBounds(380, 90, 240, 35);
+        emailTxtF.setFont(new Font("Consolas", Font.PLAIN, 16));
+        emailTxtF.setForeground(Color.WHITE);
+        emailTxtF.setCaretColor(Color.WHITE);
+        emailTxtF.setBackground(new Color(27,27,27));
+        mainPanel.add(emailTxtF);
+    }
+
+    private void setPasswordPanel(){
+
+        JLabel passString = new JLabel();
+        passString.setText("Password");
+        passString.setBounds(380, 150, 120, 20);
+        passString.setFont(new Font("Consolas", Font.BOLD, 16));
+        passString.setForeground(Color.WHITE);
+        mainPanel.add(passString);
+
+        passwordTxtF = new JPasswordField();
+        passwordTxtF.setBounds(380, 175, 240, 35);
+        passwordTxtF.setBackground(new Color(27,27,27));
+        passwordTxtF.setForeground(Color.WHITE);
+        passwordTxtF.setCaretColor(Color.WHITE);
+        mainPanel.add(passwordTxtF);
+    }
+
+    private void setButtons(){
+
+        signUpBtn = new JButton();
+        signUpBtn.setBounds(390, 300, 100, 32);
+        signUpBtn.setText("Sign Up");
+        signUpBtn.setFont(new Font("Consolas", Font.BOLD, 16));
+        signUpBtn.setForeground(Color.WHITE);
+        signUpBtn.setBackground(new Color(50,205,50));
+        signUpBtn.setFocusable(false);
+        signUpBtn.addActionListener(this);
+        mainPanel.add(signUpBtn);
+
+        signInBtn = new JButton();
+        signInBtn.setBounds(500, 300, 100, 32);
+        signInBtn.setText("Sign In");
+        signInBtn.setFont(new Font("Consolas", Font.BOLD, 16));
+        signInBtn.setForeground(Color.WHITE);
+        signInBtn.setBackground(new Color(50,205,50));
+        signInBtn.setFocusable(false);
+        signInBtn.addActionListener(this);
+        mainPanel.add(signInBtn);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if(e.getSource() == signUpBtn){
+
+            System.out.println("Email: " + getEmail());
+            System.out.println("Password: " + getPassword());
+
+            if(isValidEmail(getEmail()) && isValidPassword(getPassword())){
+
+                users.put(getEmail(), getPassword());
+
+                HomeFrame frame = new HomeFrame(this);
+                frame.setVisible(true);
+                this.setVisible(false);
+            }
+
+            if(!isValidEmail(getEmail())){
+                warningLabel.setText("Invalid Email.");
+                passwordWarner.setText("");
+                System.out.println("Email Invalid...");
+            }
+            else if (!isValidPassword(getPassword())) {
+                warningLabel.setText("Invalid Password.");
+                passwordWarner.setText("More than 4 chars & no spacing.");
+                System.out.println("Password Invalid...");
+            }
+
+        }else if(e.getSource() == signInBtn){
+
+            if(users.containsKey(getEmail()) && users.get(getEmail()).equals(getPassword())){
+
+                    HomeFrame frame = new HomeFrame(this);
+                    frame.setVisible(true);
+                    this.setVisible(false);
+            }else{
+                passwordWarner.setText("");
+                warningLabel.setText("Invalid Email OR Password.");
+            }
+        }
+    }
+
+    private void initWarningLabel() {
+
+        warningLabel = new JLabel();
+        warningLabel.setBounds(380, 230, 290, 20);
+        warningLabel.setFont(new Font("Consolas", Font.BOLD, 16));
+        warningLabel.setForeground(Color.RED);
+        mainPanel.add(warningLabel);
+
+        passwordWarner = new JLabel();
+        passwordWarner.setBounds(380, 251, 400, 20);
+        passwordWarner.setFont(new Font("Consolas", Font.BOLD, 16));
+        passwordWarner.setForeground(Color.RED);
+        mainPanel.add(passwordWarner);
+    }
+
+    public boolean isValidEmail(String email) {
+
+        if (email == null) {
+            return false;
+        }
+
+        Matcher matcher = emailPattern.matcher(email);
+        return matcher.matches();
+    }
+
+    public boolean isValidPassword(String password) {
+
+        if (password == null) {
+            return false;
+        }
+
+        Matcher matcher = passwordPattern.matcher(password);
+        return matcher.matches();
+    }
+
+    public String getEmail(){
+        return emailTxtF.getText();
+    }
+
+    public String getPassword(){
+
+        try{
+            return passwordTxtF.getText();
+        }catch (NullPointerException e){
+            return "";
+        }
+    }
+}
