@@ -9,6 +9,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -103,6 +104,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
         emailTxtF = new JTextField();
         emailTxtF.setBounds(380, 90, 240, 35);
+        emailTxtF.setMargin(new Insets(4, 10, 0, 10));
         emailTxtF.setFont(new Font("Consolas", Font.PLAIN, 16));
         emailTxtF.setForeground(Color.WHITE);
         emailTxtF.setCaretColor(Color.WHITE);
@@ -121,6 +123,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
         passwordTxtF = new JPasswordField();
         passwordTxtF.setBounds(380, 175, 240, 35);
+        passwordTxtF.setMargin(new Insets(2, 10, 0, 10));
         passwordTxtF.setBackground(new Color(27,27,27));
         passwordTxtF.setForeground(Color.WHITE);
         passwordTxtF.setCaretColor(Color.WHITE);
@@ -132,6 +135,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         signUpBtn = new JButton();
         signUpBtn.setBounds(390, 300, 100, 32);
         signUpBtn.setText("Sign Up");
+        signUpBtn.setMargin(new Insets(3, 5, 0, 5));
         signUpBtn.setFont(new Font("Consolas", Font.BOLD, 16));
         signUpBtn.setForeground(Color.WHITE);
         signUpBtn.setBackground(new Color(50,205,50));
@@ -142,6 +146,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         signInBtn = new JButton();
         signInBtn.setBounds(500, 300, 100, 32);
         signInBtn.setText("Sign In");
+        signInBtn.setMargin(new Insets(3, 5, 0, 5));
         signInBtn.setFont(new Font("Consolas", Font.BOLD, 16));
         signInBtn.setForeground(Color.WHITE);
         signInBtn.setBackground(new Color(50,205,50));
