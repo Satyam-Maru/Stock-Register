@@ -85,7 +85,7 @@ public class HomeFrame extends JFrame implements ActionListener {
     public void DB() throws SQLException {
 
         String url =
-        "jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:6543/postgres?user=postgres.cvqrsctgiehsqykhldou&password=[Satyam@7874]";
+        "jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:6543/postgres";
 
         String user = "postgres.cvqrsctgiehsqykhldou";
 
