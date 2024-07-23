@@ -12,6 +12,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -26,15 +27,12 @@ public class LoginFrame extends JFrame implements ActionListener {
 
     JPanel mainPanel;
 
-    JLabel stockImgLabel;
-    JLabel warningLabel;
-    JLabel passwordWarner;
+    JLabel stockImgLabel, warningLabel, passwordWarner;
 
     JTextField emailTxtF;
     JPasswordField passwordTxtF;
 
-    JButton signUpBtn;
-    JButton signInBtn;
+    JButton signUpBtn, signInBtn;
 
     // For Email Validation
     // -----------------------------------------------------------------------------
@@ -50,7 +48,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
     // DS
     // -----------------------------------------------------------------------------
-    protected static HashMap<String, String> users = new HashMap<>();
+    protected static HashMap<String, String> users;
     // -----------------------------------------------------------------------------
 
     LoginFrame(){
@@ -71,6 +69,8 @@ public class LoginFrame extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(Color.BLACK);
         this.add(mainPanel);
+
+        getUsers(); // HashMap containing user's data
 
         this.setVisible(true);
     }
@@ -161,49 +161,50 @@ public class LoginFrame extends JFrame implements ActionListener {
 
         if(e.getSource() == signUpBtn){
 
-            System.out.println("Email: " + getEmail());
-            System.out.println("Password: " + getPassword());
-
             if(isValidEmail(getEmail()) && isValidPassword(getPassword())){
 
-//                users.put(getEmail(), getPassword());
+                if(users.containsKey(getEmail())){
+                    // will run if user is already signed up
+                    warningLabel.setText("Already a user, please sign in.");
+                    passwordWarner.setText("");
+                }else{
 
-                try {
+                    // run for new users
+                    try {
+                        // Database Insertion
+                        Database.getConnection();
 
-                    Database.getConnection();
+                        String query = "INSERT INTO users VAlUES (?, ?)";
+                        Database.prepareStatement(query);
 
-                    String query = "INSERT INTO users VAlUES (?, ?)";
-                    Database.prepareStatement(query);
+                        Database.pst.setString(1, getEmail());
+                        Database.pst.setString(2, getPassword());
 
-                    Database.pst.setString(1, getEmail());
-                    Database.pst.setString(2, getPassword());
+                        Database.pst.executeUpdate();
 
-                    int r = Database.pst.executeUpdate();
+                    } catch (SQLException ex) {
+                        System.out.println(ex.getMessage());
+                    }
 
-                } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
+                    HomeFrame frame = new HomeFrame(this);
+                    frame.setVisible(true);
+                    this.setVisible(false);
                 }
-
-                HomeFrame frame = new HomeFrame(this);
-                frame.setVisible(true);
-                this.setVisible(false);
             }
 
             if(!isValidEmail(getEmail())){
+
                 warningLabel.setText("Invalid Email.");
                 passwordWarner.setText("");
-                System.out.println("Email Invalid...");
             }
             else if (!isValidPassword(getPassword())) {
                 warningLabel.setText("Invalid Password.");
                 passwordWarner.setText("More than 4 chars & no spacing.");
-                System.out.println("Password Invalid...");
             }
 
         }else if(e.getSource() == signInBtn){
 
             if(users.containsKey(getEmail()) && users.get(getEmail()).equals(getPassword())){
-
                     HomeFrame frame = new HomeFrame(this);
                     frame.setVisible(true);
                     this.setVisible(false);
@@ -259,6 +260,32 @@ public class LoginFrame extends JFrame implements ActionListener {
             return passwordTxtF.getText();
         }catch (NullPointerException e){
             return "";
+        }
+    }
+
+    protected void getUsers(){
+
+        String query = "SELECT user_email, user_password FROM users";
+
+        try{
+            // Storing the user's data into HashMap
+            Database.getConnection();
+            Database.prepareStatement(query);
+
+            users = new HashMap<>();
+
+            ResultSet rs = Database.pst.executeQuery();
+
+            while(rs.next()){
+
+                String email = rs.getString("user_email");
+                String password = rs.getString("user_password");
+
+                users.put(email, password);
+            }
+
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
         }
     }
 }
