@@ -8,8 +8,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class HomeFrame extends JFrame implements ActionListener {
@@ -26,7 +24,7 @@ public class HomeFrame extends JFrame implements ActionListener {
         this.frame = frame;
     }
 
-    private void initFrame() {
+    protected void initFrame() {
 
         this.setTitle("Home Frame");
         this.setIconImage(LoginFrame.loginFrameLogo.getImage());
@@ -47,7 +45,7 @@ public class HomeFrame extends JFrame implements ActionListener {
         this.setVisible(true);
     }
 
-    private void setButtons() {
+    protected void setButtons() {
 
         backBtn = new JButton();
         backBtn.setText("Go Back");
@@ -71,32 +69,20 @@ public class HomeFrame extends JFrame implements ActionListener {
             this.setVisible(false);
             frame.setVisible(true);
         } else if (e.getSource() == dbBtn) {
+
             try {
-                DB();
+
+                Database.getConnection();
+
+                String query = "INSERT INTO users VAlUES (?, ?)";
+                Database.prepareStatement(query);
+
+
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+
         }
 
-    }
-
-    public void DB() throws SQLException {
-
-        String url = "jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:6543/postgres";
-
-        String user = "postgres.cvqrsctgiehsqykhldou";
-
-        String pass = "Satyam@7874";
-
-        Connection con = DriverManager.getConnection(url, user, pass);
-
-        if (con != null)
-            System.out.println("Connection Successfully");
-        else
-            System.out.println("Connection Failed");
-    }
-
-    public void dd() {
-        System.out.println("Hello Word VS");
     }
 }

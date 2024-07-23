@@ -12,13 +12,14 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LoginFrame extends JFrame implements ActionListener {
 
-    static final int frameWidth = 1020, frameHeight = 650;
+    protected static final int frameWidth = 1020, frameHeight = 650;
 
     static ImageIcon loginFrameLogo = new ImageIcon("src\\main\\java\\com\\stockregister\\Images\\LoginFrameLogo.png");
     ImageIcon stockRegisterImg = new ImageIcon("src\\main\\java\\com\\stockregister\\Images\\StockRegisterImg.png");
@@ -49,7 +50,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
     // DS
     // -----------------------------------------------------------------------------
-    public static HashMap<String, String> users = new HashMap<>();
+    protected static HashMap<String, String> users = new HashMap<>();
     // -----------------------------------------------------------------------------
 
     LoginFrame(){
@@ -59,7 +60,7 @@ public class LoginFrame extends JFrame implements ActionListener {
     }
 
 
-    private void initFrame() {
+    protected void initFrame() {
 
         this.setTitle("Login Frame");
         this.setIconImage(loginFrameLogo.getImage());
@@ -74,7 +75,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         this.setVisible(true);
     }
 
-    private void initMainPanel() {
+    protected void initMainPanel() {
 
         mainPanel = new JPanel();
         mainPanel.setBounds(170, 80, frameWidth - 170, 420);
@@ -93,7 +94,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         initWarningLabel();
     }
 
-    private void setEmailPanel(){
+    protected void setEmailPanel(){
 
         JLabel emailString = new JLabel();
         emailString.setText("Email");
@@ -112,7 +113,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         mainPanel.add(emailTxtF);
     }
 
-    private void setPasswordPanel(){
+    protected void setPasswordPanel(){
 
         JLabel passString = new JLabel();
         passString.setText("Password");
@@ -130,7 +131,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         mainPanel.add(passwordTxtF);
     }
 
-    private void setButtons(){
+    protected void setButtons(){
 
         signUpBtn = new JButton();
         signUpBtn.setBounds(390, 300, 100, 32);
@@ -165,7 +166,23 @@ public class LoginFrame extends JFrame implements ActionListener {
 
             if(isValidEmail(getEmail()) && isValidPassword(getPassword())){
 
-                users.put(getEmail(), getPassword());
+//                users.put(getEmail(), getPassword());
+
+                try {
+
+                    Database.getConnection();
+
+                    String query = "INSERT INTO users VAlUES (?, ?)";
+                    Database.prepareStatement(query);
+
+                    Database.pst.setString(1, getEmail());
+                    Database.pst.setString(2, getPassword());
+
+                    int r = Database.pst.executeUpdate();
+
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
 
                 HomeFrame frame = new HomeFrame(this);
                 frame.setVisible(true);
@@ -197,7 +214,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         }
     }
 
-    private void initWarningLabel() {
+    protected void initWarningLabel() {
 
         warningLabel = new JLabel();
         warningLabel.setBounds(380, 230, 290, 20);
@@ -212,7 +229,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         mainPanel.add(passwordWarner);
     }
 
-    public boolean isValidEmail(String email) {
+    protected boolean isValidEmail(String email) {
 
         if (email == null) {
             return false;
@@ -222,7 +239,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         return matcher.matches();
     }
 
-    public boolean isValidPassword(String password) {
+    protected boolean isValidPassword(String password) {
 
         if (password == null) {
             return false;
@@ -232,11 +249,11 @@ public class LoginFrame extends JFrame implements ActionListener {
         return matcher.matches();
     }
 
-    public String getEmail(){
+    protected String getEmail(){
         return emailTxtF.getText();
     }
 
-    public String getPassword(){
+    protected String getPassword(){
 
         try{
             return passwordTxtF.getText();
