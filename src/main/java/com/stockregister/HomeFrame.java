@@ -65,7 +65,7 @@ public class HomeFrame extends JFrame implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e){
 
         if(e.getSource() == backBtn){
             this.setVisible(false);
@@ -97,5 +97,9 @@ public class HomeFrame extends JFrame implements ActionListener {
             System.out.println("Connection Successfully");
         else
             System.out.println("Connection Failed");
+    }
+
+    public void dd(){
+
     }
 }
