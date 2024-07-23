@@ -17,11 +17,11 @@ public class HomeFrame extends JFrame implements ActionListener {
     JButton backBtn, dbBtn;
     JFrame frame;
 
-    HomeFrame(){
+    HomeFrame() {
         initFrame();
     }
 
-    HomeFrame(JFrame frame){
+    HomeFrame(JFrame frame) {
         this();
         this.frame = frame;
     }
@@ -30,10 +30,10 @@ public class HomeFrame extends JFrame implements ActionListener {
 
         this.setTitle("Home Frame");
         this.setIconImage(LoginFrame.loginFrameLogo.getImage());
-        this.setSize(LoginFrame.frameWidth, LoginFrame.frameHeight);  // 1020, 650
+        this.setSize(LoginFrame.frameWidth, LoginFrame.frameHeight); // 1020, 650
         this.setResizable(false);
-        this.setLayout(new FlowLayout());   // managing the layout self
-        this.setLocationRelativeTo(null);   // sets the frame in center of the window
+        this.setLayout(new FlowLayout()); // managing the layout self
+        this.setLocationRelativeTo(null); // sets the frame in center of the window
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setBackground(Color.WHITE);
 
@@ -47,31 +47,30 @@ public class HomeFrame extends JFrame implements ActionListener {
         this.setVisible(true);
     }
 
-    private void setButtons(){
+    private void setButtons() {
 
         backBtn = new JButton();
         backBtn.setText("Go Back");
         backBtn.setFont(new Font("Consolas", Font.BOLD, 16));
         backBtn.setForeground(Color.WHITE);
-        backBtn.setBackground(new Color(50,205,50));
+        backBtn.setBackground(new Color(50, 205, 50));
         backBtn.addActionListener(this);
 
         dbBtn = new JButton();
         dbBtn.setText("DB");
         dbBtn.setFont(new Font("Consolas", Font.BOLD, 16));
         dbBtn.setForeground(Color.WHITE);
-        dbBtn.setBackground(new Color(50,205,50));
+        dbBtn.setBackground(new Color(50, 205, 50));
         dbBtn.addActionListener(this);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e){
+    public void actionPerformed(ActionEvent e) {
 
-        if(e.getSource() == backBtn){
+        if (e.getSource() == backBtn) {
             this.setVisible(false);
             frame.setVisible(true);
-        }
-        else if (e.getSource() == dbBtn) {
+        } else if (e.getSource() == dbBtn) {
             try {
                 DB();
             } catch (SQLException ex) {
@@ -79,13 +78,11 @@ public class HomeFrame extends JFrame implements ActionListener {
             }
         }
 
-
     }
 
     public void DB() throws SQLException {
 
-        String url =
-        "jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:6543/postgres";
+        String url = "jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:6543/postgres";
 
         String user = "postgres.cvqrsctgiehsqykhldou";
 
@@ -93,13 +90,13 @@ public class HomeFrame extends JFrame implements ActionListener {
 
         Connection con = DriverManager.getConnection(url, user, pass);
 
-        if(con != null)
+        if (con != null)
             System.out.println("Connection Successfully");
         else
             System.out.println("Connection Failed");
     }
 
-    public void dd(){
-        System.out.println("Hi");
+    public void dd() {
+        System.out.println("Hello Word VS");
     }
 }
