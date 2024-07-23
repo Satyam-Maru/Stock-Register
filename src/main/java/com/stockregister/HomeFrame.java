@@ -100,6 +100,6 @@ public class HomeFrame extends JFrame implements ActionListener {
     }
 
     public void dd(){
-
+        System.out.println("Hiii");
     }
 }
