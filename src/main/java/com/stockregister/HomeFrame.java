@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 
 public class HomeFrame extends JFrame implements ActionListener {
 
@@ -70,16 +69,10 @@ public class HomeFrame extends JFrame implements ActionListener {
             frame.setVisible(true);
         } else if (e.getSource() == dbBtn) {
 
-            try {
-
-                String query = "INSERT INTO users VAlUES (?, ?)";
-                Database.prepareStatement(query);
-
-
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-            }
-
+            System.out.println("HELLO: " + LoginFrame.getEmail());
+            System.out.println("Home Frame User Id: " + User.getUser_id());
+            System.out.println("------------------After Exception----------------");
+            System.out.println("Home Frame store_name: " + User.getStore_name());
         }
 
     }

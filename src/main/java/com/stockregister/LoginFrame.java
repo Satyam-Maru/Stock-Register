@@ -12,9 +12,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +27,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
     JLabel stockImgLabel, warningLabel, passwordWarner;
 
-    JTextField emailTxtF;
+    static JTextField emailTxtF;
     JPasswordField passwordTxtF;
 
     JButton signUpBtn, signInBtn;
@@ -44,11 +42,6 @@ public class LoginFrame extends JFrame implements ActionListener {
     // -----------------------------------------------------------------------------
     private final String PASSWORD_PATTERN = "^[\\S]{5,}$";
     private final Pattern passwordPattern = Pattern.compile(PASSWORD_PATTERN);
-    // -----------------------------------------------------------------------------
-
-    // DS
-    // -----------------------------------------------------------------------------
-    protected static HashMap<String, String> users;
     // -----------------------------------------------------------------------------
 
     LoginFrame(){
@@ -70,12 +63,12 @@ public class LoginFrame extends JFrame implements ActionListener {
         this.getContentPane().setBackground(Color.BLACK);
         this.add(mainPanel);
 
+        // TO-DO apply threading in Database.getConnection()
         try{
             Database.getConnection();
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
-        getUsers(); // HashMap containing user's data
 
         this.setVisible(true);
     }
@@ -136,6 +129,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         mainPanel.add(passwordTxtF);
     }
 
+    // TO-DO apply DATA_REDUNDANCY (make a method that init default btn settings)
     protected void setButtons(){
 
         signUpBtn = new JButton();
@@ -164,13 +158,15 @@ public class LoginFrame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        getUsers(); // HashMap containing user's data
+        User.getUsers(); // init HashMap containing user's data
 
         if(e.getSource() == signUpBtn){
 
+            // checks for value returned from TextField And PasswordField
             if(isValidEmail(getEmail()) && isValidPassword(getPassword())){
 
-                if(users.containsKey(getEmail())){
+                // User.users => users = HashMap
+                if(User.users.containsKey(getEmail())){
                     // will run if user is already signed up
                     warningLabel.setText("Already a user, please sign in.");
                     passwordWarner.setText("");
@@ -179,14 +175,16 @@ public class LoginFrame extends JFrame implements ActionListener {
                     // run for new users
                     try {
                         // Database Insertion
-
-                        String query = "INSERT INTO users VAlUES (?, ?)";
+                        String query = "INSERT INTO users VAlUES (?, ?, ?)";
                         Database.prepareStatement(query);
 
-                        Database.pst.setString(1, getEmail());
-                        Database.pst.setString(2, getPassword());
+                        Database.pst.setString(1, getEmail()); // JTextField
+                        Database.pst.setString(2, getPassword()); // JPasswordField
+                        Database.pst.setString(3, "Checking Store_name");
 
                         Database.pst.executeUpdate();
+
+                        User.current_user = new User(getEmail(), getPassword(), User.getStore_name(), User.getUser_id());
 
                     } catch (SQLException ex) {
                         System.out.println(ex.getMessage());
@@ -210,7 +208,10 @@ public class LoginFrame extends JFrame implements ActionListener {
 
         }else if(e.getSource() == signInBtn){
                                              // users.get(getEmail()) => returns password
-            if(users.containsKey(getEmail()) && users.get(getEmail()).equals(getPassword())){
+            if(User.users.containsKey(getEmail()) && User.users.get(getEmail()).equals(getPassword())){
+
+                    User.current_user = new User(getEmail(), getPassword(), User.getStore_name(), User.getUser_id());
+
                     HomeFrame frame = new HomeFrame(this);
                     frame.setVisible(true);
                     this.setVisible(false);
@@ -256,10 +257,12 @@ public class LoginFrame extends JFrame implements ActionListener {
         return matcher.matches();
     }
 
-    protected String getEmail(){
+    // returns email from JTextField
+    protected static String getEmail(){
         return emailTxtF.getText();
     }
 
+    // returns password from JPasswordField
     protected String getPassword(){
 
         try{
@@ -269,28 +272,4 @@ public class LoginFrame extends JFrame implements ActionListener {
         }
     }
 
-    protected void getUsers(){
-
-        String query = "SELECT user_email, user_password FROM users";
-
-        try{
-            // Storing the user's data into HashMap
-            Database.prepareStatement(query);
-
-            users = new HashMap<>();
-
-            ResultSet rs = Database.pst.executeQuery();
-
-            while(rs.next()){
-
-                String email = rs.getString("user_email");
-                String password = rs.getString("user_password");
-
-                users.put(email, password);
-            }
-
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-        }
-    }
 }
