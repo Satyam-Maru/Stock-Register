@@ -72,8 +72,6 @@ public class HomeFrame extends JFrame implements ActionListener {
 
             try {
 
-                Database.getConnection();
-
                 String query = "INSERT INTO users VAlUES (?, ?)";
                 Database.prepareStatement(query);
 

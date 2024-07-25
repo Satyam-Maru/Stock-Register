@@ -70,6 +70,11 @@ public class LoginFrame extends JFrame implements ActionListener {
         this.getContentPane().setBackground(Color.BLACK);
         this.add(mainPanel);
 
+        try{
+            Database.getConnection();
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
         getUsers(); // HashMap containing user's data
 
         this.setVisible(true);
