@@ -159,6 +159,8 @@ public class LoginFrame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        getUsers(); // HashMap containing user's data
+
         if(e.getSource() == signUpBtn){
 
             if(isValidEmail(getEmail()) && isValidPassword(getPassword())){
@@ -172,7 +174,6 @@ public class LoginFrame extends JFrame implements ActionListener {
                     // run for new users
                     try {
                         // Database Insertion
-                        Database.getConnection();
 
                         String query = "INSERT INTO users VAlUES (?, ?)";
                         Database.prepareStatement(query);
@@ -203,7 +204,7 @@ public class LoginFrame extends JFrame implements ActionListener {
             }
 
         }else if(e.getSource() == signInBtn){
-
+                                             // users.get(getEmail()) => returns password
             if(users.containsKey(getEmail()) && users.get(getEmail()).equals(getPassword())){
                     HomeFrame frame = new HomeFrame(this);
                     frame.setVisible(true);
@@ -269,7 +270,6 @@ public class LoginFrame extends JFrame implements ActionListener {
 
         try{
             // Storing the user's data into HashMap
-            Database.getConnection();
             Database.prepareStatement(query);
 
             users = new HashMap<>();
