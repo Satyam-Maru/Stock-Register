@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
@@ -174,13 +175,16 @@ public class LoginFrame extends JFrame implements ActionListener {
 
                     // run for new users
                     try {
+
+                        String store_name = getStoreName();
+
                         // Database Insertion
                         String query = "INSERT INTO users VAlUES (?, ?, ?)";
                         Database.prepareStatement(query);
 
                         Database.pst.setString(1, getEmail()); // JTextField
                         Database.pst.setString(2, getPassword()); // JPasswordField
-                        Database.pst.setString(3, "Checking Store_name");
+                        Database.pst.setString(3, store_name);
 
                         Database.pst.executeUpdate();
 
@@ -269,6 +273,45 @@ public class LoginFrame extends JFrame implements ActionListener {
             return passwordTxtF.getText();
         }catch (NullPointerException e){
             return "";
+        }
+    }
+
+    protected String getStoreName(){
+
+        // Create a custom JPanel with a background color
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.LIGHT_GRAY); // Set your desired background color
+
+        // Create a JLabel and a JTextField
+        JLabel label = new JLabel("Enter Store Name:");
+        JTextField textField = new JTextField(20);
+
+        // Set custom properties for the JTextField
+        textField.setMargin(new Insets(3, 8, 0, 8));
+        textField.setFont(new Font("Consolas", Font.PLAIN, 16));
+        textField.setForeground(Color.WHITE);
+        textField.setCaretColor(Color.WHITE);
+        textField.setBackground(new Color(27,27,27));
+
+        panel.add(label);
+        panel.add(textField);
+
+        // Display the custom JPanel in a JOptionPane
+        int result = JOptionPane.showConfirmDialog(null, panel, "Input", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        // Process the result
+        if (result == JOptionPane.OK_OPTION) {
+
+            String value = textField.getText();
+
+            if(value.isEmpty() || value.trim().isEmpty()){
+                return getStoreName();
+            }else{
+                return value;
+            }
+
+        } else {
+            return getStoreName();
         }
     }
 
