@@ -188,7 +188,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
                         Database.pst.executeUpdate();
 
-                        User.current_user = new User(getEmail(), getPassword(), User.getStore_name(), User.getUser_id());
+                        User.current_user = new User(getEmail(), getPassword(), User.fetchStoreName(), User.fetchUserId());
 
                     } catch (SQLException ex) {
                         System.out.println(ex.getMessage());
@@ -214,7 +214,7 @@ public class LoginFrame extends JFrame implements ActionListener {
                                              // users.get(getEmail()) => returns password
             if(User.users.containsKey(getEmail()) && User.users.get(getEmail()).equals(getPassword())){
 
-                    User.current_user = new User(getEmail(), getPassword(), User.getStore_name(), User.getUser_id());
+                    User.current_user = new User(getEmail(), getPassword(), User.fetchStoreName(), User.fetchUserId());
 
                     HomeFrame frame = new HomeFrame(this);
                     frame.setVisible(true);

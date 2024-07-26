@@ -38,15 +38,15 @@ public class User {
     }
 
     // return current active user_id
-    protected static int getUser_id(){
-        return fetchUser_id();
+    protected static int getUserId(){
+        return user_id;
     }
 
-    protected static String getStore_name(){
-        return fetchStore_name();
+    protected static String getStoreName(){
+        return store_name;
     }
 
-    protected static int fetchUser_id(){
+    protected static int fetchUserId(){
 
         String query = "SELECT user_id FROM users WHERE user_email = ?";
 
@@ -71,7 +71,7 @@ public class User {
         return -1;
     }
 
-    protected static String fetchStore_name(){
+    protected static String fetchStoreName(){
 
         String query = "SELECT store_name FROM users WHERE user_email = ?";
 
