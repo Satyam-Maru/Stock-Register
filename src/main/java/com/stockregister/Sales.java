@@ -10,7 +10,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Items {
+public class Sales {
 
     static JPanel panel;
 
@@ -18,7 +18,7 @@ public class Items {
         panel = new JPanel();
         panel.setBounds(140, 60, 1035, 640);
         panel.setLayout(null);
-        panel.setBackground(Color.GREEN);
+        panel.setBackground(Color.yellow);
     }
 
     protected static JPanel getPanel(){

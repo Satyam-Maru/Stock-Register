@@ -4,6 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.awt.CardLayout;
+import java.awt.Insets;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -17,13 +19,12 @@ public class HomeFrame extends JFrame implements ActionListener {
 
     protected static final int HomeFrameWidth = 1200, HomeFrameHeight = 750;
 
-    JButton stockBtn, partyBtn, itemsBtn, backBtn, refreshBtn, prevBtn;
+    JButton stockBtn, partyBtn, itemsBtn, salesBtn, backBtn, refreshBtn, prevBtn;
     JFrame frame;
-    JPanel headPanel, leftPanel;
+    JPanel headPanel, leftPanel, workPanel;
     JLabel store_name_label;
 
-    Color greyColor1 = new Color(139, 139, 129);
-    Color greyColor2 = new Color(136, 140, 124);
+    Color greyPanel = new Color(139, 139, 129);
     Color greyFont = new Color(206, 206, 206);
 
     HomeFrame() {
@@ -47,6 +48,7 @@ public class HomeFrame extends JFrame implements ActionListener {
         this.setBackground(Color.WHITE);
 
         setPanels();
+        setWorkPanel();
         setButtons();
 
         this.setVisible(true);
@@ -54,10 +56,10 @@ public class HomeFrame extends JFrame implements ActionListener {
 
     protected void setPanels(){
 
-        int x = (HomeFrameWidth / 2) - 100;
+        int x = (HomeFrameWidth / 2) - 80;
         store_name_label = new JLabel();
         store_name_label.setBounds(x, 0, 250, 50);
-        store_name_label.setText("Interior Gallery");
+        store_name_label.setText(User.getStoreName());
         store_name_label.setFont(new Font("Rockwell", Font.BOLD, 25));
         store_name_label.setForeground(Color.BLACK);
 
@@ -65,14 +67,14 @@ public class HomeFrame extends JFrame implements ActionListener {
         headPanel = new JPanel();
         headPanel.setLayout(null);
         headPanel.setBounds(0, 0, HomeFrameWidth, 50);
-        headPanel.setBackground(greyColor2);
+        headPanel.setBackground(greyPanel);
         headPanel.add(store_name_label);
 
         // leftPanel contains stockBtn, partyBtn, itemsBtn
         leftPanel = new JPanel();
         leftPanel.setLayout(null);
         leftPanel.setBounds(0, 50, 130, HomeFrameHeight - headPanel.getBounds().height);
-        leftPanel.setBackground(greyColor1);
+        leftPanel.setBackground(greyPanel);
 
         this.add(headPanel);
         this.add(leftPanel);
@@ -80,17 +82,14 @@ public class HomeFrame extends JFrame implements ActionListener {
 
     protected void setButtons() {
 
-        backBtn = new JButton("Back");
-        backBtn.setBounds(0, 0, headPanel.getBounds().height, headPanel.getBounds().height);
-        backBtn.setBackground(greyColor2);
-        backBtn.addActionListener(this);
-        backBtn.setFocusable(false);
+        backBtn = initButton(backBtn, "Back");
+        backBtn.setBounds(0, 0, 90, headPanel.getBounds().height);
+        backBtn.setFont(new Font("Rockwell", Font.BOLD, 22));
+        backBtn.setMargin(new Insets(4, 2, 0, 0));
 
-        refreshBtn = new JButton("Refresh");
-        refreshBtn.setBounds(1140, 0, headPanel.getBounds().height, headPanel.getBounds().height);
-        refreshBtn.setBackground(greyColor2);
-        refreshBtn.addActionListener(this);
-        refreshBtn.setFocusable(false);
+        refreshBtn = initButton(refreshBtn, "Refresh");
+        refreshBtn.setBounds(1070, 0, 120, headPanel.getBounds().height);
+        refreshBtn.setFont(new Font("Rockwell", Font.BOLD, 22));
 
         // leftPanel contains stockBtn, partyBtn, itemsBtn
         stockBtn =  initButton(stockBtn, "Stock");
@@ -102,6 +101,10 @@ public class HomeFrame extends JFrame implements ActionListener {
         itemsBtn = initButton(itemsBtn, "Items");
         itemsBtn.setBounds(0, 190, leftPanel.getBounds().width, 40);
 
+        salesBtn = initButton(salesBtn, "Sales"); // 30 gap in y
+        salesBtn.setBounds(0, 260, leftPanel.getBounds().width, 40);
+        salesBtn.setForeground(Color.BLACK);
+        prevBtn = salesBtn;
 
         headPanel.add(backBtn);
         headPanel.add(refreshBtn);
@@ -109,12 +112,13 @@ public class HomeFrame extends JFrame implements ActionListener {
         leftPanel.add(stockBtn);
         leftPanel.add(partyBtn);
         leftPanel.add(itemsBtn);
+        leftPanel.add(salesBtn);
     }
 
     private JButton initButton(JButton button, String buttonName){
 
         button = new JButton(buttonName);
-        button.setBackground(greyColor1);
+        button.setBackground(greyPanel);
         button.setFont(new Font("Rockwell", Font.BOLD, 25));
         button.setForeground(greyFont);
         button.addActionListener(this);
@@ -131,33 +135,66 @@ public class HomeFrame extends JFrame implements ActionListener {
             frame.setVisible(true);
         }
         else if (e.getSource() == refreshBtn) {
+            // call method which will refresh the frame OR reload the
             System.out.println("Refresh btn");
+            highlightBtn(prevBtn, refreshBtn);
+            prevBtn = refreshBtn;
         }
         else if (e.getSource() == stockBtn) {
-            System.out.println("Stock btn");
+
             highlightBtn(prevBtn, stockBtn);
             prevBtn = stockBtn;
+
+            showWorkPanel("Stock Panel");
         }
         else if (e.getSource() == partyBtn) {
-            System.out.println("Party Btn");
+
             highlightBtn(prevBtn, partyBtn);
             prevBtn = partyBtn;
+
+            showWorkPanel("Party Panel");
         }
         else if (e.getSource() == itemsBtn) {
-            System.out.println("Items btn");
+
             highlightBtn(prevBtn, itemsBtn);
             prevBtn = itemsBtn;
+
+            showWorkPanel("Items Panel");
+        }
+        else if(e.getSource() == salesBtn){
+
+            highlightBtn(prevBtn, salesBtn);
+            prevBtn = salesBtn;
+
+            showWorkPanel("Sales Panel");
         }
     }
 
     private void highlightBtn(JButton prevBtn, JButton currentBtn){
+        prevBtn.setForeground(greyFont);
+        currentBtn.setForeground(Color.BLACK);
+    }
 
-        if(prevBtn == null){
-            currentBtn.setForeground(Color.BLACK);
-        }else{
-            prevBtn.setForeground(greyFont);
-            currentBtn.setForeground(Color.BLACK);
-        }
+    private void setWorkPanel(){
 
+        workPanel = new JPanel(new CardLayout());
+        workPanel.setBounds(140, 60, 1035, 640);
+
+        Stock.setPanel();
+        Party.setPanel();
+        Items.setPanel();
+        Sales.setPanel();
+
+        workPanel.add(Sales.getPanel(), "Sales Panel");
+        workPanel.add(Stock.getPanel(), "Stock Panel");
+        workPanel.add(Party.getPanel(), "Party Panel");
+        workPanel.add(Items.getPanel(), "Items Panel");
+
+        this.add(workPanel);
+    }
+
+    private void showWorkPanel(String panelName){
+        CardLayout cl = (CardLayout) (workPanel.getLayout());
+        cl.show(workPanel, panelName);
     }
 }
