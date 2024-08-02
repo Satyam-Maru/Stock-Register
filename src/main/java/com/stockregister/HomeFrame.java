@@ -17,10 +17,14 @@ public class HomeFrame extends JFrame implements ActionListener {
 
     protected static final int HomeFrameWidth = 1200, HomeFrameHeight = 750;
 
-    JButton stockBtn, partyBtn, itemsBtn, backBtn, refreshBtn;
+    JButton stockBtn, partyBtn, itemsBtn, backBtn, refreshBtn, prevBtn;
     JFrame frame;
     JPanel headPanel, leftPanel;
     JLabel store_name_label;
+
+    Color greyColor1 = new Color(139, 139, 129);
+    Color greyColor2 = new Color(136, 140, 124);
+    Color greyFont = new Color(206, 206, 206);
 
     HomeFrame() {
         initFrame();
@@ -55,20 +59,20 @@ public class HomeFrame extends JFrame implements ActionListener {
         store_name_label.setBounds(x, 0, 250, 50);
         store_name_label.setText("Interior Gallery");
         store_name_label.setFont(new Font("Rockwell", Font.BOLD, 25));
-        store_name_label.setForeground(Color.GREEN);
+        store_name_label.setForeground(Color.BLACK);
 
         // headPanel contains backBtn, store_name_label, refreshBtn
         headPanel = new JPanel();
         headPanel.setLayout(null);
         headPanel.setBounds(0, 0, HomeFrameWidth, 50);
-        headPanel.setBackground(Color.BLACK);
+        headPanel.setBackground(greyColor2);
         headPanel.add(store_name_label);
 
         // leftPanel contains stockBtn, partyBtn, itemsBtn
         leftPanel = new JPanel();
         leftPanel.setLayout(null);
-        leftPanel.setBounds(0, 50, 150, HomeFrameHeight - headPanel.getBounds().height);
-        leftPanel.setBackground(Color.MAGENTA);
+        leftPanel.setBounds(0, 50, 130, HomeFrameHeight - headPanel.getBounds().height);
+        leftPanel.setBackground(greyColor1);
 
         this.add(headPanel);
         this.add(leftPanel);
@@ -76,15 +80,15 @@ public class HomeFrame extends JFrame implements ActionListener {
 
     protected void setButtons() {
 
-        backBtn = new JButton();
+        backBtn = new JButton("Back");
         backBtn.setBounds(0, 0, headPanel.getBounds().height, headPanel.getBounds().height);
-        backBtn.setBackground(Color.cyan);
+        backBtn.setBackground(greyColor2);
         backBtn.addActionListener(this);
         backBtn.setFocusable(false);
 
-        refreshBtn = new JButton();
+        refreshBtn = new JButton("Refresh");
         refreshBtn.setBounds(1140, 0, headPanel.getBounds().height, headPanel.getBounds().height);
-        refreshBtn.setBackground(Color.RED);
+        refreshBtn.setBackground(greyColor2);
         refreshBtn.addActionListener(this);
         refreshBtn.setFocusable(false);
 
@@ -110,9 +114,9 @@ public class HomeFrame extends JFrame implements ActionListener {
     private JButton initButton(JButton button, String buttonName){
 
         button = new JButton(buttonName);
-        button.setBackground(Color.BLACK);
+        button.setBackground(greyColor1);
         button.setFont(new Font("Rockwell", Font.BOLD, 25));
-        button.setForeground(Color.WHITE);
+        button.setForeground(greyFont);
         button.addActionListener(this);
         button.setFocusable(false);
 
@@ -131,12 +135,29 @@ public class HomeFrame extends JFrame implements ActionListener {
         }
         else if (e.getSource() == stockBtn) {
             System.out.println("Stock btn");
+            highlightBtn(prevBtn, stockBtn);
+            prevBtn = stockBtn;
         }
         else if (e.getSource() == partyBtn) {
             System.out.println("Party Btn");
+            highlightBtn(prevBtn, partyBtn);
+            prevBtn = partyBtn;
         }
         else if (e.getSource() == itemsBtn) {
             System.out.println("Items btn");
+            highlightBtn(prevBtn, itemsBtn);
+            prevBtn = itemsBtn;
         }
+    }
+
+    private void highlightBtn(JButton prevBtn, JButton currentBtn){
+
+        if(prevBtn == null){
+            currentBtn.setForeground(Color.BLACK);
+        }else{
+            prevBtn.setForeground(greyFont);
+            currentBtn.setForeground(Color.BLACK);
+        }
+
     }
 }
