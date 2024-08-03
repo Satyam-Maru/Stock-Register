@@ -14,14 +14,14 @@ public class Party {
 
     static JPanel panel;
 
-    protected static void setPanel(){
+    protected void setPanel(){
         panel = new JPanel();
         panel.setBounds(140, 60, 1035, 640);
         panel.setLayout(null);
         panel.setBackground(Color.PINK);
     }
 
-    protected static JPanel getPanel(){
+    protected JPanel getPanel(){
         return panel;
     }
 

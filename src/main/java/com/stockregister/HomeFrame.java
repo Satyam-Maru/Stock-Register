@@ -170,6 +170,7 @@ public class HomeFrame extends JFrame implements ActionListener {
         }
     }
 
+    // By-default Sales button will be highlighted
     private void highlightBtn(JButton prevBtn, JButton currentBtn){
         prevBtn.setForeground(greyFont);
         currentBtn.setForeground(Color.BLACK);
@@ -177,22 +178,31 @@ public class HomeFrame extends JFrame implements ActionListener {
 
     private void setWorkPanel(){
 
+        // CardLayout acts like a stack of panels
         workPanel = new JPanel(new CardLayout());
         workPanel.setBounds(140, 60, 1035, 640);
 
-        Stock.setPanel();
-        Party.setPanel();
-        Items.setPanel();
-        Sales.setPanel();
+        // Initialize panels
+        Stock stock = new Stock();
+        Party party = new Party();
+        Items items = new Items();
+        Sales sales = new Sales();
 
-        workPanel.add(Sales.getPanel(), "Sales Panel");
-        workPanel.add(Stock.getPanel(), "Stock Panel");
-        workPanel.add(Party.getPanel(), "Party Panel");
-        workPanel.add(Items.getPanel(), "Items Panel");
+        stock.setPanel();
+        party.setPanel();
+        items.setPanel();
+        sales.setPanel();
+
+        // after this addition, workPanel stores the different panels
+        workPanel.add(sales.getPanel(), "Sales Panel");
+        workPanel.add(stock.getPanel(), "Stock Panel");
+        workPanel.add(party.getPanel(), "Party Panel");
+        workPanel.add(items.getPanel(), "Items Panel");
 
         this.add(workPanel);
     }
 
+    // Displays the panel stored in workPanel's CardLayout wrt panel's name
     private void showWorkPanel(String panelName){
         CardLayout cl = (CardLayout) (workPanel.getLayout());
         cl.show(workPanel, panelName);
