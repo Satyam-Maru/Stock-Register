@@ -137,43 +137,39 @@ public class HomeFrame extends JFrame implements ActionListener {
         else if (e.getSource() == refreshBtn) {
             // call method which will refresh the frame OR reload the
             System.out.println("Refresh btn");
-            highlightBtn(prevBtn, refreshBtn);
-            prevBtn = refreshBtn;
+            highlightBtn(refreshBtn);
         }
         else if (e.getSource() == stockBtn) {
 
-            highlightBtn(prevBtn, stockBtn);
-            prevBtn = stockBtn;
+            highlightBtn(stockBtn);
 
             showWorkPanel("Stock Panel");
         }
         else if (e.getSource() == partyBtn) {
 
-            highlightBtn(prevBtn, partyBtn);
-            prevBtn = partyBtn;
+            highlightBtn(partyBtn);
 
             showWorkPanel("Party Panel");
         }
         else if (e.getSource() == itemsBtn) {
 
-            highlightBtn(prevBtn, itemsBtn);
-            prevBtn = itemsBtn;
+            highlightBtn(itemsBtn);
 
             showWorkPanel("Items Panel");
         }
         else if(e.getSource() == salesBtn){
 
-            highlightBtn(prevBtn, salesBtn);
-            prevBtn = salesBtn;
+            highlightBtn(salesBtn);
 
             showWorkPanel("Sales Panel");
         }
     }
 
     // By-default Sales button will be highlighted
-    private void highlightBtn(JButton prevBtn, JButton currentBtn){
+    private void highlightBtn(JButton currentBtn){
         prevBtn.setForeground(greyFont);
         currentBtn.setForeground(Color.BLACK);
+        prevBtn = currentBtn;
     }
 
     private void setWorkPanel(){

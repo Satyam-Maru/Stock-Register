@@ -109,28 +109,23 @@ public class Stock extends JFrame implements ActionListener {
 
         if(e.getSource() == addBtn){
             System.out.println("add btn");
-            highlightBtn(prevBtn, addBtn);
-            prevBtn = addBtn;
+            highlightBtn(addBtn);
             showPanelStack("Add Item Panel");
         }
         else if (e.getSource() == stockInBtn){
-            highlightBtn(prevBtn, stockInBtn);
-            prevBtn = stockInBtn;
+            highlightBtn(stockInBtn);
             System.out.println("stockIn btn");
         }
         else if (e.getSource() == stockOutBtn){
-            highlightBtn(prevBtn, stockOutBtn);
-            prevBtn = stockOutBtn;
+            highlightBtn(stockOutBtn);
             System.out.println("stockOut btn");
         }
         else if (e.getSource() == removeBtn){
-            highlightBtn(prevBtn, removeBtn);
-            prevBtn = removeBtn;
+            highlightBtn(removeBtn);
             System.out.println("remove btn");
         }
         else if (e.getSource() == updateBtn){
-            highlightBtn(prevBtn, updateBtn);
-            prevBtn = updateBtn;
+            highlightBtn(updateBtn);
             System.out.println("Update btn");
         }
     }
@@ -165,7 +160,7 @@ public class Stock extends JFrame implements ActionListener {
         return addItemPanel;
     }
 
-    private void highlightBtn(JButton prevBtn, JButton currentBtn){
+    private void highlightBtn(JButton currentBtn){
 
         if(prevBtn == null){
             currentBtn.setForeground(Color.BLACK);
@@ -173,5 +168,7 @@ public class Stock extends JFrame implements ActionListener {
             prevBtn.setForeground(new Color(206, 206, 206));
             currentBtn.setForeground(Color.BLACK);
         }
+
+        prevBtn = currentBtn;
     }
 }
