@@ -1,15 +1,10 @@
 package com.stockregister;
 
-import javax.swing.JFrame;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.CardLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
 
 
 public class Stock extends JFrame implements ActionListener {
@@ -22,10 +17,11 @@ public class Stock extends JFrame implements ActionListener {
     // Swing components
     // ------------------------------------------------------------------------------------------
     protected JPanel stockPanel, buttonsPanel, addItemPanel, panelStack;
-    protected JButton addBtn, stockInBtn, stockOutBtn, removeBtn, updateBtn, prevBtn;
+    protected JButton addBtn, stockInBtn, stockOutBtn, removeBtn, updateBtn, prevBtn, doneBtn;
     protected JLabel itemLabel, categoryLabel, purchaseLabel, sellingLabel,
-                     mrpLabel, priceUnitLabel, openingStockLabel, openingStockDateLabel;
-    protected JTextField itemTxtF, purchaseTxtF, sellingTxtF, mrpTxtF, openingStockTxtF, openingStockDateTxtF;
+                      priceUnitLabel, openingStockLabel, partyLabel;
+    protected JTextField itemTF, categoryTF, purchaseTF, sellingTF, partyTF, openingStockTF;
+    private JComboBox<String> priceUnit;
     // ------------------------------------------------------------------------------------------
 
     // Variables
@@ -33,20 +29,6 @@ public class Stock extends JFrame implements ActionListener {
     protected String item_name, category, price_unit;
     protected double purchase_price, selling_price, MRP;
     // ------------------------------------------------------------------------------------------
-
-    Stock(){
-//        this.setSize(HomeFrame.HomeFrameWidth, HomeFrame.HomeFrameHeight);
-//        this.setLayout(null);
-//        this.setLocationRelativeTo(null);
-//        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        // Panel work
-//        setPanel();
-//        setPanelStack();
-////        this.add(getPanel()); // removed for adjusting the stockPanel
-//        //
-//        this.setVisible(true);
-//        System.out.println("Opening Stock Class");
-    }
 
     protected void setPanel(){
         stockPanel = new JPanel();
@@ -61,6 +43,8 @@ public class Stock extends JFrame implements ActionListener {
 
         setButtons();
         stockPanel.add(buttonsPanel);
+        setPanelStack();
+        stockPanel.add(panelStack);
     }
 
     protected void setButtons(){
@@ -68,6 +52,8 @@ public class Stock extends JFrame implements ActionListener {
         // 50-50 gap between y
         addBtn = initButton(addBtn, "Add new Item");
         addBtn.setBounds(5, 50, 250, 40);
+        addBtn.setForeground(Color.BLACK);
+        prevBtn = addBtn;
 
         stockInBtn = initButton(stockInBtn, "Stock In");
         stockInBtn.setBounds(55, 140, 135, 40);
@@ -115,6 +101,7 @@ public class Stock extends JFrame implements ActionListener {
         else if (e.getSource() == stockInBtn){
             highlightBtn(stockInBtn);
             System.out.println("stockIn btn");
+            showPanelStack("check");
         }
         else if (e.getSource() == stockOutBtn){
             highlightBtn(stockOutBtn);
@@ -130,17 +117,16 @@ public class Stock extends JFrame implements ActionListener {
         }
     }
 
-    protected JPanel setPanelStack(){
+    protected void setPanelStack(){
+
+        int x = buttonsPanel.getWidth() + 10;
+        int width = stockPanel.getWidth() - buttonsPanel.getWidth() - 10;
 
         panelStack = new JPanel(new CardLayout());
-        panelStack.setBounds(140, 60, 1035, 640);
+        panelStack.setBounds(x, 0, width, stockPanel.getHeight());
 
-        panelStack.add(getPanel(), "Stock Panel");
         panelStack.add(addItemPanel(), "Add Item Panel");
-
-        this.add(panelStack);
-
-        return panelStack;
+        stockPanel.add(panelStack);
     }
 
     // Displays the panel stored in workPanel's CardLayout wrt panel's name
@@ -152,22 +138,102 @@ public class Stock extends JFrame implements ActionListener {
     protected JPanel addItemPanel(){
 
         addItemPanel = new JPanel();
-        addItemPanel.setSize(400, 600);
+        // setBounds not needed as the panelStack is working in CardLayout
+        addItemPanel.setLayout(null);
+        addItemPanel.setBackground(Color.WHITE);
 
-        JButton btn = new JButton("Hello");
-        addItemPanel.add(btn);
+        setAddItemLabels();
+        setAddItemTextField();
 
         return addItemPanel;
     }
 
+    private void setAddItemLabels() {
+
+        itemLabel = new JLabel("Item name");
+        itemLabel.setBounds(50, 55, 170, 30);
+        initLabel(itemLabel);
+
+        categoryLabel = new JLabel("Category");
+        categoryLabel.setBounds(itemLabel.getWidth() + 250, itemLabel.getY(), 150, 30);
+        initLabel(categoryLabel);
+
+        purchaseLabel = new JLabel("Purchase Price");
+        purchaseLabel.setBounds(itemLabel.getX(), itemLabel.getY() + 100, 200, 30);
+        initLabel(purchaseLabel);
+
+        sellingLabel = new JLabel("Selling Price");
+        sellingLabel.setBounds(itemLabel.getWidth() + 250, purchaseLabel.getY(), 200, 30);
+        initLabel(sellingLabel);
+
+        partyLabel = new JLabel("Party");
+        partyLabel.setBounds(itemLabel.getX(), purchaseLabel.getY() + 100, 80, 30);
+        initLabel(partyLabel);
+
+        priceUnitLabel = new JLabel("Price Unit");
+        priceUnitLabel.setBounds(itemLabel.getWidth() + 250, partyLabel.getY(), 200, 30);
+        initLabel(priceUnitLabel);
+
+        openingStockLabel = new JLabel("Opening Stock");
+        openingStockLabel.setBounds(itemLabel.getX(), partyLabel.getY() + 100, 200, 30);
+        initLabel(openingStockLabel);
+    }
+
+    private void initLabel(JLabel label){
+        label.setBackground(Color.BLACK);
+        label.setFont(new Font("Rockwell", Font.BOLD, 25));
+        addItemPanel.add(label);
+    }
+
+    private void setAddItemTextField() {
+
+        itemTF = new JTextField();
+        itemTF.setBounds(itemLabel.getX(), itemLabel.getY() + itemLabel.getHeight() + 7, 200, 30);
+        initTextField(itemTF);
+
+        categoryTF = new JTextField();
+        categoryTF.setBounds(categoryLabel.getX(), categoryLabel.getY() + categoryLabel.getHeight() + 7, 140, 30);
+        initTextField(categoryTF);
+
+        purchaseTF = new JTextField();
+        purchaseTF.setBounds(purchaseLabel.getX(), purchaseLabel.getY() + purchaseLabel.getHeight() + 7, 120, 30);
+        initTextField(purchaseTF);
+
+        sellingTF = new JTextField();
+        sellingTF.setBounds(sellingLabel.getX(), sellingLabel.getY() + sellingLabel.getHeight() + 7, 120, 30);
+        initTextField(sellingTF);
+
+        partyTF = new JTextField();
+        partyTF.setBounds(partyLabel.getX(), partyLabel.getY() + partyLabel.getHeight() + 7, 150, 30);
+        initTextField(partyTF);
+
+        // for price unit (combo box)
+        String[] elements = {"Hello", "Hi"};
+        priceUnit = new JComboBox<>(elements);
+        priceUnit.setBounds(priceUnitLabel.getX(), priceUnitLabel.getY() + priceUnitLabel.getHeight() + 7, 120, 30);
+        addItemPanel.add(priceUnit);
+
+        openingStockTF = new JTextField();
+        openingStockTF.setBounds(openingStockLabel.getX(), openingStockLabel.getY() + openingStockLabel.getHeight() + 7, 120, 30);
+        initTextField(openingStockTF);
+
+        doneBtn = initButton(doneBtn, "Done");
+        doneBtn.setBounds(categoryLabel.getX() - 150,openingStockTF.getY() + openingStockTF.getHeight() + 100, 150, 50);
+        doneBtn.setForeground(Color.WHITE);
+        doneBtn.setBackground(Color.BLACK);
+        addItemPanel.add(doneBtn);
+    }
+
+    private void initTextField(JTextField TxtF){
+        TxtF.setMargin(new Insets(0, 4, 0, 4));
+        TxtF.setFont(new Font("Rockwell", Font.PLAIN, 17));
+        addItemPanel.add(TxtF);
+    }
+
     private void highlightBtn(JButton currentBtn){
 
-        if(prevBtn == null){
-            currentBtn.setForeground(Color.BLACK);
-        }else{
-            prevBtn.setForeground(new Color(206, 206, 206));
-            currentBtn.setForeground(Color.BLACK);
-        }
+        prevBtn.setForeground(new Color(206, 206, 206));
+        currentBtn.setForeground(Color.BLACK);
 
         prevBtn = currentBtn;
     }

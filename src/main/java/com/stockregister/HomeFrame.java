@@ -191,7 +191,7 @@ public class HomeFrame extends JFrame implements ActionListener {
 
         // after this addition, workPanel stores the different panels
         workPanel.add(sales.getPanel(), "Sales Panel");
-        workPanel.add(stock.setPanelStack(), "Stock Panel");
+        workPanel.add(stock.getPanel(), "Stock Panel");
 //        workPanel.add(stock.addItemPanel(), "Add Item Panel");
         workPanel.add(party.getPanel(), "Party Panel");
         workPanel.add(items.getPanel(), "Items Panel");
