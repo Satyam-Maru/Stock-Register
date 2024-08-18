@@ -11,15 +11,17 @@ public class Stock extends JFrame implements ActionListener {
     // ------------------------------------------------------------------------------------------
     protected JPanel stockPanel, buttonsPanel, addItemPanel, panelStack, stockInOutPanel, updatePanel, removePanel;
     protected JButton addBtn, stockInOutBtn, removeBtn, updateBtn, prevBtn, addItemDoneBtn,
-                        stockInBtn, stockOutBtn, updateDoneBtn, updateCategoryOkBtn,removeDoneBtn;
+                        stockInBtn, stockOutBtn, updateDoneBtn, updateCategoryOkBtn, removeCategoryOKBtn,removeDoneBtn;
     protected JLabel itemLabel, categoryLabel, purchaseLabel, sellingLabel, // addItemPanel
                       priceUnitLabel, openingStockLabel, partyLabel;        // addItemPanel
     protected JLabel stPartyLabel, stCategoryLabel, stItemLabel, stQuantityLabel, stPriceLabel, // stockInOut
-                     updateCategoryLabel, updateItemLabel, updatePriceLabel, updateQuantityLabel;
+                     updateCategoryLabel, updateItemLabel, updatePriceLabel, updateQuantityLabel, // updatePanel
+                     removeCategoryLabel, removeItemLabel; // removePanel
     protected JTextField itemTF, categoryTF, purchaseTF, sellingTF, partyTF, openingStockTF; // addItemPanel
     protected JTextField stPartyTF, stQuantityTF, stPriceTF, // stockInOutPanel
-                        updateCategoryTF, updateQuantityTF, updatePriceTF; // updatePanel
-    private JComboBox<String> priceUnit, stCategoryComboBox, stItemComboBox, updateItemComboBox;
+                        updateCategoryTF, updateQuantityTF, updatePriceTF, // updatePanel
+                        removeCategoryTF;
+    private JComboBox<String> priceUnit, stCategoryComboBox, stItemComboBox, updateItemComboBox, removeItemComboBox;
     // ------------------------------------------------------------------------------------------
 
     // Variables
@@ -98,6 +100,7 @@ public class Stock extends JFrame implements ActionListener {
         else if (e.getSource() == removeBtn){
             highlightBtn(removeBtn);
             System.out.println("remove btn");
+            showPanelStack("Remove Panel");
         }
     }
 
@@ -269,9 +272,9 @@ public class Stock extends JFrame implements ActionListener {
         updatePanel.add(updatePriceTF);
 
         updateCategoryOkBtn = initButton("OK");
-        updateCategoryOkBtn.setBounds(updateCategoryTF.getX() + updateCategoryTF.getWidth() + 10, updateCategoryTF.getY(), 80, 30);
+        updateCategoryOkBtn.setBounds(updateCategoryTF.getX() + updateCategoryTF.getWidth() + 10, updateCategoryTF.getY(), 60, 30);
         updateCategoryOkBtn.setContentAreaFilled(false);
-//        updateCategoryOkBtn.setBorderPainted(false);
+        updateCategoryOkBtn.setFont(new Font("Rockwell", Font.PLAIN, 15));
         updateCategoryOkBtn.setForeground(Color.BLACK);
         updatePanel.add(updateCategoryOkBtn);
 
@@ -281,6 +284,44 @@ public class Stock extends JFrame implements ActionListener {
         updateDoneBtn.setForeground(Color.WHITE);
         updateDoneBtn.setBackground(Color.BLACK);
         updatePanel.add(updateDoneBtn);
+    }
+
+    private void setRemoveLabels(){
+        removeCategoryLabel = initLabel("Category");
+        removeCategoryLabel.setBounds(80, 80, 150, 30);
+        removePanel.add(removeCategoryLabel);
+
+        removeItemLabel = initLabel("Item");
+        removeItemLabel.setBounds(removeCategoryLabel.getX() + removeCategoryLabel.getWidth() + 100,
+                removeCategoryLabel.getY(), 80, 30);
+        removePanel.add(removeItemLabel);
+    }
+
+    private void setRemoveTextField_ComboBox(){
+        removeCategoryTF = initTextField();
+        removeCategoryTF.setBounds(removeCategoryLabel.getX(),
+                removeCategoryLabel.getY() + removeCategoryLabel.getHeight() + 7, 100, 30);
+        removePanel.add(removeCategoryTF);
+
+        removeCategoryOKBtn = initButton("OK");
+        removeCategoryOKBtn.setBounds(removeCategoryTF.getX() + removeCategoryTF.getWidth() + 10,
+                removeCategoryTF.getY(), 60, 30);
+        removeCategoryOKBtn.setContentAreaFilled(false);
+        removeCategoryOKBtn.setFont(new Font("Rockwell", Font.PLAIN, 15));
+        removeCategoryOKBtn.setForeground(Color.BLACK);
+        removePanel.add(removeCategoryOKBtn);
+
+        removeItemComboBox = new JComboBox<>(new String[]{"ok", "nice man"});
+        removeItemComboBox.setBounds(removeItemLabel.getX(),
+                    removeItemLabel.getY() + removeItemLabel.getHeight() + 7, 150, 30);
+        removePanel.add(removeItemComboBox);
+
+        removeDoneBtn = initButton("Done");
+        removeDoneBtn.setBounds(removeCategoryTF.getX() + removeCategoryTF.getWidth() + 70,
+                removeCategoryTF.getY() + removeCategoryTF.getHeight() + 100, 120, 50);
+        removeDoneBtn.setForeground(Color.WHITE);
+        removeDoneBtn.setBackground(Color.BLACK);
+        removePanel.add(removeDoneBtn);
     }
     // ------------------------------------------------------------------------------
 
@@ -346,6 +387,14 @@ public class Stock extends JFrame implements ActionListener {
         return updatePanel;
     }
 
+    private JPanel set_getRemovePanel(){
+        removePanel = new JPanel();
+        removePanel.setLayout(null);
+        setRemoveLabels();
+        setRemoveTextField_ComboBox();
+        return removePanel;
+    }
+
     protected void setPanelStack(){
         int x = buttonsPanel.getWidth() + 10;
         int width = stockPanel.getWidth() - buttonsPanel.getWidth() - 10;
@@ -356,6 +405,7 @@ public class Stock extends JFrame implements ActionListener {
         panelStack.add(set_getAddItemPanel(), "Add Item Panel");
         panelStack.add(set_getStockInOutPanel(), "Stock In Out Panel");
         panelStack.add(set_getUpdatePanel(), "Update Panel");
+        panelStack.add(set_getRemovePanel(), "Remove Panel");
         stockPanel.add(panelStack);
     }
 
