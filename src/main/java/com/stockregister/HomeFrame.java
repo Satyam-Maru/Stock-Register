@@ -83,7 +83,7 @@ public class HomeFrame extends JFrame implements ActionListener {
     protected void setButtons() {
 
         backBtn = initButton(backBtn, "Back");
-        backBtn.setBounds(0, 0, 90, headPanel.getBounds().height);
+        backBtn.setBounds(15, 0, 90, headPanel.getBounds().height);
         backBtn.setFont(new Font("Rockwell", Font.BOLD, 22));
         backBtn.setMargin(new Insets(4, 2, 0, 0));
 
@@ -139,8 +139,6 @@ public class HomeFrame extends JFrame implements ActionListener {
             System.out.println("Refresh btn");
             highlightBtn(prevBtn, refreshBtn);
             prevBtn = refreshBtn;
-
-
         }
         else if (e.getSource() == stockBtn) {
 

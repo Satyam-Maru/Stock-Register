@@ -22,7 +22,7 @@ public class Stock extends JFrame implements ActionListener {
     // Swing components
     // ------------------------------------------------------------------------------------------
     protected JPanel stockPanel, buttonsPanel, addItemPanel, panelStack;
-    protected JButton addBtn, stockInBtn, stockOutBtn, removeBtn, updateBtn, doneBtn, backBtn;
+    protected JButton addBtn, stockInBtn, stockOutBtn, removeBtn, updateBtn, prevBtn;
     protected JLabel itemLabel, categoryLabel, purchaseLabel, sellingLabel,
                      mrpLabel, priceUnitLabel, openingStockLabel, openingStockDateLabel;
     protected JTextField itemTxtF, purchaseTxtF, sellingTxtF, mrpTxtF, openingStockTxtF, openingStockDateTxtF;
@@ -35,27 +35,29 @@ public class Stock extends JFrame implements ActionListener {
     // ------------------------------------------------------------------------------------------
 
     Stock(){
-        this.setSize(HomeFrame.HomeFrameWidth, HomeFrame.HomeFrameHeight);
-        this.setLayout(null);
-        this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // Panel work
-        setPanel();
-        setPanelStack();
-//        this.add(getPanel()); // removed for adjusting the stockPanel
-        //
-        this.setVisible(true);
-        System.out.println("Opening Stock Class");
+//        this.setSize(HomeFrame.HomeFrameWidth, HomeFrame.HomeFrameHeight);
+//        this.setLayout(null);
+//        this.setLocationRelativeTo(null);
+//        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        // Panel work
+//        setPanel();
+//        setPanelStack();
+////        this.add(getPanel()); // removed for adjusting the stockPanel
+//        //
+//        this.setVisible(true);
+//        System.out.println("Opening Stock Class");
     }
 
     protected void setPanel(){
         stockPanel = new JPanel();
         stockPanel.setBounds(140, 60, 1035, 640);
         stockPanel.setLayout(null);
+        stockPanel.setBackground(Color.WHITE);
 
         buttonsPanel = new JPanel();
-        buttonsPanel.setBounds(320, 150, 390, 300);
+        buttonsPanel.setBounds(0, 0, 260, 640);
         buttonsPanel.setLayout(null);
+        buttonsPanel.setBackground(new Color(139, 139, 129));
 
         setButtons();
         stockPanel.add(buttonsPanel);
@@ -65,25 +67,20 @@ public class Stock extends JFrame implements ActionListener {
 
         // 50-50 gap between y
         addBtn = initButton(addBtn, "Add new Item");
-        addBtn.setBounds(70, 0, 250, 40);
+        addBtn.setBounds(5, 50, 250, 40);
 
         stockInBtn = initButton(stockInBtn, "Stock In");
-        stockInBtn.setBounds(10, 90, 135, 40);
+        stockInBtn.setBounds(55, 140, 135, 40);
 
         stockOutBtn = initButton(stockOutBtn, "Stock Out");
-        stockOutBtn.setBounds(230, 90, 160, 40); // x occupied = 390
+        stockOutBtn.setBounds(40, 230, 160, 40); // x occupied = 390
 
         removeBtn = initButton(removeBtn, "Remove an Item");
-        removeBtn.setBounds(70, 180, 250, 40);
+        removeBtn.setBounds(5, 320, 250, 40);
 
         updateBtn = initButton(updateBtn, "Update an Item");
-        updateBtn.setBounds(70, 260, 250, 40); // y occupied = 300
+        updateBtn.setBounds(5, 410, 250, 40); // y occupied = 300
 
-        backBtn = initButton(backBtn, "Back");
-        backBtn.setBounds(10, 0, 90, 30);
-        backBtn.setFont(new Font("Rockwell", Font.BOLD, 20));
-
-        stockPanel.add(backBtn);
         buttonsPanel.add(addBtn);
         buttonsPanel.add(stockInBtn);
         buttonsPanel.add(stockOutBtn);
@@ -98,9 +95,9 @@ public class Stock extends JFrame implements ActionListener {
     private JButton initButton(JButton button, String buttonName){
 
         button = new JButton(buttonName);
-        button.setBackground(Color.WHITE);
+        button.setBackground(new Color(139, 139, 129));
         button.setFont(new Font("Rockwell", Font.BOLD, 25));
-        button.setForeground(Color.BLACK);
+        button.setForeground(new Color(206, 206, 206));
         button.addActionListener(this);
         button.setFocusable(false);
 
@@ -112,18 +109,28 @@ public class Stock extends JFrame implements ActionListener {
 
         if(e.getSource() == addBtn){
             System.out.println("add btn");
+            highlightBtn(prevBtn, addBtn);
+            prevBtn = addBtn;
             showPanelStack("Add Item Panel");
         }
         else if (e.getSource() == stockInBtn){
+            highlightBtn(prevBtn, stockInBtn);
+            prevBtn = stockInBtn;
             System.out.println("stockIn btn");
         }
         else if (e.getSource() == stockOutBtn){
+            highlightBtn(prevBtn, stockOutBtn);
+            prevBtn = stockOutBtn;
             System.out.println("stockOut btn");
         }
         else if (e.getSource() == removeBtn){
+            highlightBtn(prevBtn, removeBtn);
+            prevBtn = removeBtn;
             System.out.println("remove btn");
         }
         else if (e.getSource() == updateBtn){
+            highlightBtn(prevBtn, updateBtn);
+            prevBtn = updateBtn;
             System.out.println("Update btn");
         }
     }
@@ -156,5 +163,15 @@ public class Stock extends JFrame implements ActionListener {
         addItemPanel.add(btn);
 
         return addItemPanel;
+    }
+
+    private void highlightBtn(JButton prevBtn, JButton currentBtn){
+
+        if(prevBtn == null){
+            currentBtn.setForeground(Color.BLACK);
+        }else{
+            prevBtn.setForeground(new Color(206, 206, 206));
+            currentBtn.setForeground(Color.BLACK);
+        }
     }
 }
