@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static com.stockregister.Stock.initLabel;
 import static com.stockregister.Stock.initTextField;
@@ -80,7 +82,7 @@ public class AddNewItem {
         addItemPanel.add(partyTF);
 
         // for price unit (combo box)
-        String[] elements = {"Hello", "Hi"};
+        String[] elements = {"Packet", "Piece", "Litre"};
         priceUnit = new JComboBox<>(elements);
         priceUnit.setBounds(priceUnitLabel.getX(), priceUnitLabel.getY() + priceUnitLabel.getHeight() + 7, 120, 30);
         addItemPanel.add(priceUnit);
@@ -103,7 +105,24 @@ public class AddNewItem {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("check");
+
+                String query = "select insert_new_item (?, ?, ?, ?, ?, ?, ?, ?);";
+                try{
+                    Database.prepareStatement(query);
+                    Database.pst.setInt(1, User.getUserId());
+                    Database.pst.setString(2, itemTF.getText());
+                    Database.pst.setString(3, categoryTF.getText());
+                    Database.pst.setString(4, partyTF.getText());
+                    Database.pst.setDouble(5, Double.parseDouble(purchaseTF.getText()));
+                    Database.pst.setDouble(6, Double.parseDouble(sellingTF.getText()));
+                    Database.pst.setString(7, String.valueOf(priceUnit.getSelectedItem()));
+                    Database.pst.setDouble(8, Double.parseDouble(openingStockTF.getText()));
+                    ResultSet rs = Database.pst.executeQuery();
+                }catch (SQLException ex){
+                    System.out.println(ex.getMessage());
+                }
+
+//                String retrieveData = "SELECT * from "
             }
         });
         button.setFocusable(false);
