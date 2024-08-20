@@ -1,5 +1,9 @@
 package com.stockregister;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,17 +13,31 @@ public class Database {
 
     protected static Connection con = null;
 
-    protected static String url = "jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:6543/postgres";
-
-    protected static String user = "postgres.cvqrsctgiehsqykhldou";
-
-    protected static String pass = "Satyam@7874";
-
     protected static PreparedStatement pst = null;
 
     protected static void getConnection() throws SQLException {
 
-        con = DriverManager.getConnection(url, user, pass);
+        FileReader fr;
+        BufferedReader br;
+        String [] arr=new String[3];
+
+        try{
+            fr = new FileReader("src\\main\\java\\com\\stockregister\\SupabaseData.txt");
+            br=new BufferedReader(fr);
+            String line=br.readLine();
+
+            int i=0;
+            while (line!=null){
+                arr[i]=line;
+                i++;
+                line=br.readLine();
+            }
+
+        }catch(IOException e){
+            System.out.println(e.getMessage());
+        }
+
+        con = DriverManager.getConnection(arr[0], arr[1], arr[2]);
 
         if (con != null)
             System.out.println("Connection Successfully");
