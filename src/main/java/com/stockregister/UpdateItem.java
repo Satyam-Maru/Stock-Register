@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static com.stockregister.Stock.initLabel;
 import static com.stockregister.Stock.initTextField;
@@ -13,8 +15,9 @@ public class UpdateItem {
     protected static JPanel updatePanel;
     protected static JButton updateDoneBtn, updateCategoryOkBtn;
     protected static JLabel updateCategoryLabel, updateItemLabel, updatePriceLabel, updateQuantityLabel;
-    protected static JTextField updateCategoryTF, updateQuantityTF, updatePriceTF;
-    protected static JComboBox<String> updateItemComboBox;
+    protected static JTextField updateQuantityTF, updatePriceTF;
+    protected static JComboBox<String> updateCategoryComboBox, updateItemComboBox;
+    static String[] items = new String[0];
 
     protected static JPanel set_getUpdatePanel(){
         updatePanel = new JPanel();
@@ -44,13 +47,82 @@ public class UpdateItem {
     }
 
     private static void setUpdateTextFields_ComboBox(){
-        updateCategoryTF = initTextField();
-        updateCategoryTF.setBounds(updateCategoryLabel.getX(), updateCategoryLabel.getY() + updateCategoryLabel.getHeight() + 7, 150, 30);
-        updatePanel.add(updateCategoryTF);
 
-        updateItemComboBox = new JComboBox<>(new String[]{"check", "done"});
-        updateItemComboBox.setBounds(updateItemLabel.getX(), updateItemLabel.getY() + updateItemLabel.getHeight() + 7, 150, 30);
-        updatePanel.add(updateItemComboBox);
+        String query = "select name from category where id IN (select cat_id from items where user_id = (?));";
+        String[] categories = new String[0];
+
+        try{
+
+            String countRows = "select count(id) from category where id in (select cat_id from items where user_id = (?))";
+            Database.prepareStatement(countRows);
+            Database.pst.setInt(1, User.getUserId());
+            ResultSet rs = Database.pst.executeQuery();
+
+            if(rs.next()){
+                categories = new String[rs.getInt("count")];
+            }
+
+            Database.prepareStatement(query);
+            Database.pst.setInt(1, User.getUserId());
+            rs = Database.pst.executeQuery();
+            int i = 0;
+            while(rs.next()){
+                categories[i++] = rs.getString(1);
+            }
+
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+        updateCategoryComboBox = new JComboBox<>(categories);
+        updateCategoryComboBox.setBounds(updateCategoryLabel.getX(), updateCategoryLabel.getY() + updateCategoryLabel.getHeight() + 7, 150, 30);
+        updateCategoryComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String category = String.valueOf(updateCategoryComboBox.getSelectedItem());
+                String q = "select name from items where cat_id = (?) and user_id = (?);";
+
+                try{
+                    String getCategoryId = "select id from category where name = (?)";
+                    Database.prepareStatement(getCategoryId);
+                    Database.pst.setString(1, category);
+                    ResultSet rs = Database.pst.executeQuery();
+                    int cat_id = 0;
+
+                    if(rs.next()){
+                        cat_id = rs.getInt(1);
+                    }
+
+                    String countRows = "select count(id) from items where cat_id = (?) and user_id = (?);";
+                    Database.prepareStatement(countRows);
+                    Database.pst.setInt(1, cat_id);
+                    Database.pst.setInt(2, User.getUserId());
+                    rs = Database.pst.executeQuery();
+
+                    if(rs.next()){
+                        items = new String[rs.getInt("count")];
+                    }
+
+                    Database.prepareStatement(q);
+                    Database.pst.setInt(1, cat_id);
+                    Database.pst.setInt(2, User.getUserId());
+                    rs = Database.pst.executeQuery();
+                    int i = 0;
+                    while(rs.next()){
+                        items[i++] = rs.getString(1);
+                    }
+
+                    updateItemComboBox.removeAllItems();
+                    for(String item: items){
+                        updateItemComboBox.addItem(item);
+                    }
+
+                }catch(SQLException ex){
+                    System.out.println(ex.getMessage());
+                }
+            }
+        });
+        updatePanel.add(updateCategoryComboBox);
 
         updateQuantityTF = initTextField();
         updateQuantityTF.setBounds(updateQuantityLabel.getX(), updateQuantityLabel.getY() + updateQuantityLabel.getHeight() + 7, 80, 30);
@@ -60,20 +132,11 @@ public class UpdateItem {
         updatePriceTF.setBounds(updatePriceLabel.getX(), updatePriceLabel.getY() + updatePriceLabel.getHeight() + 7, 80, 30);
         updatePanel.add(updatePriceTF);
 
-        updateCategoryOkBtn = initButton("OK");
-        updateCategoryOkBtn.setBounds(updateCategoryTF.getX() + updateCategoryTF.getWidth() + 10, updateCategoryTF.getY(), 60, 30);
-        updateCategoryOkBtn.setContentAreaFilled(false);
-        updateCategoryOkBtn.setFont(new Font("Rockwell", Font.PLAIN, 15));
-        updateCategoryOkBtn.setForeground(Color.BLACK);
-        updateCategoryOkBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("update category ok btn");
-            }
-        });
-        updatePanel.add(updateCategoryOkBtn);
+        updateItemComboBox = new JComboBox<>(items);
+        updateItemComboBox.setBounds(updateItemLabel.getX(), updateItemLabel.getY() + updateItemLabel.getHeight() + 7, 150, 30);
+        updatePanel.add(updateItemComboBox);
 
-        updateDoneBtn = initButton("Done");
+        updateDoneBtn = initButton();
         updateDoneBtn.setBounds(updatePriceTF.getX() + updatePriceTF.getWidth() + 70,
                 updatePriceTF.getY() + updatePriceTF.getHeight() + 100, 120, 50);
         updateDoneBtn.addActionListener(new ActionListener() {
@@ -85,9 +148,9 @@ public class UpdateItem {
         updatePanel.add(updateDoneBtn);
     }
 
-    private static JButton initButton(String buttonName){
+    private static JButton initButton(){
 
-        JButton button = new JButton(buttonName);
+        JButton button = new JButton("Done");
         button.setFont(new Font("Rockwell", Font.BOLD, 25));
         button.setFocusable(false);
         button.setForeground(Color.WHITE);

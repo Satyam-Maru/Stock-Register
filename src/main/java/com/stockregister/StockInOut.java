@@ -6,17 +6,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import static com.stockregister.Stock.initLabel;
 import static com.stockregister.Stock.initTextField;
 
-public class StockInOut {
+public class  StockInOut {
 
     protected static JPanel stockInOutPanel;
-    protected static JButton stockInBtn, stockOutBtn;
+    protected static JButton stockInBtn, stockOutBtn, stockInOutCategoryOkBtn;
     protected static JLabel stPartyLabel, stCategoryLabel, stItemLabel, stQuantityLabel, stPriceLabel;
     protected static JTextField stPartyTF, stQuantityTF, stPriceTF;
     protected static JComboBox<String>  stCategoryComboBox, stItemComboBox;
+    static String[] items = new String[0];
 
     protected static JPanel set_getStockInOutPanel(){
         stockInOutPanel = new JPanel();
@@ -49,6 +51,7 @@ public class StockInOut {
     }
 
     private static void setStockInOutTextF_ComboBox(){
+
         stPartyTF = initTextField();
         stPartyTF.setBounds(stPartyLabel.getX(), stPartyLabel.getY() + stPartyLabel.getHeight() + 7, 150, 30);
         stockInOutPanel.add(stPartyTF);
@@ -82,49 +85,53 @@ public class StockInOut {
         stCategoryComboBox = new JComboBox<>(categories);
         stCategoryComboBox.setBounds(stCategoryLabel.getX(), stCategoryLabel.getY() + stCategoryLabel.getHeight() + 7, 150, 30);
         stCategoryComboBox.setSelectedIndex(0);
+        stCategoryComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String category = String.valueOf(stCategoryComboBox.getSelectedItem());
+                String q = "select name from items where cat_id = (?) and user_id = (?);";
+
+                try{
+                    String getCategoryId = "select id from category where name = (?)";
+                    Database.prepareStatement(getCategoryId);
+                    Database.pst.setString(1, category);
+                    ResultSet rs = Database.pst.executeQuery();
+                    int cat_id = 0;
+
+                    if(rs.next()){
+                        cat_id = rs.getInt(1);
+                    }
+
+                    String countRows = "select count(id) from items where cat_id = (?) and user_id = (?);";
+                    Database.prepareStatement(countRows);
+                    Database.pst.setInt(1, cat_id);
+                    Database.pst.setInt(2, User.getUserId());
+                    rs = Database.pst.executeQuery();
+
+                    if(rs.next()){
+                        items = new String[rs.getInt("count")];
+                    }
+
+                    Database.prepareStatement(q);
+                    Database.pst.setInt(1, cat_id);
+                    Database.pst.setInt(2, User.getUserId());
+                    rs = Database.pst.executeQuery();
+                    int i = 0;
+                    while(rs.next()){
+                        items[i++] = rs.getString(1);
+                    }
+
+                    stItemComboBox.removeAllItems();
+                    for(String item: items){
+                        stItemComboBox.addItem(item);
+                    }
+
+                }catch(SQLException ex){
+                    System.out.println(ex.getMessage());
+                }
+            }
+        });
         stockInOutPanel.add(stCategoryComboBox);
-
-        String category = String.valueOf(stCategoryComboBox.getSelectedItem());
-        String q = "select name from items where cat_id = (?) and user_id = (?);";
-        String[] items = new String[0];
-
-        try{
-            String getCategoryId = "select id from category where name = (?)";
-            Database.prepareStatement(getCategoryId);
-            Database.pst.setString(1, category);
-            ResultSet rs = Database.pst.executeQuery();
-            int cat_id = 0;
-
-            if(rs.next()){
-                cat_id = rs.getInt(1);
-            }
-
-            System.out.println(cat_id);
-
-            String countRows = "select count(id) from items where cat_id = (?) and user_id = (?);";
-            Database.prepareStatement(countRows);
-            Database.pst.setInt(1, cat_id);
-            Database.pst.setInt(2, User.getUserId());
-            rs = Database.pst.executeQuery();
-
-            if(rs.next()){
-                items = new String[rs.getInt("count")];
-            }
-
-            System.out.println(items.length);
-
-            Database.prepareStatement(q);
-            Database.pst.setInt(1, cat_id);
-            Database.pst.setInt(2, User.getUserId());
-            rs = Database.pst.executeQuery();
-            int i = 0;
-            while(rs.next()){
-                items[i++] = rs.getString(1);
-            }
-
-        }catch(SQLException e){
-            System.out.println(e.getMessage());
-        }
 
         stItemComboBox = new JComboBox<>(items);
         stItemComboBox.setBounds(stItemLabel.getX(), stItemLabel.getY() + stItemLabel.getHeight() + 7, 150, 30);
