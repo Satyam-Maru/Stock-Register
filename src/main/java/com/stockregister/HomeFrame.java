@@ -82,26 +82,26 @@ public class HomeFrame extends JFrame implements ActionListener {
 
     protected void setButtons() {
 
-        backBtn = initButton(backBtn, "Back");
+        backBtn = initButton("Back");
         backBtn.setBounds(15, 0, 90, headPanel.getBounds().height);
         backBtn.setFont(new Font("Rockwell", Font.BOLD, 22));
         backBtn.setMargin(new Insets(4, 2, 0, 0));
 
-        refreshBtn = initButton(refreshBtn, "Refresh");
+        refreshBtn = initButton("Refresh");
         refreshBtn.setBounds(1070, 0, 120, headPanel.getBounds().height);
         refreshBtn.setFont(new Font("Rockwell", Font.BOLD, 22));
 
         // leftPanel contains stockBtn, partyBtn, itemsBtn
-        stockBtn =  initButton(stockBtn, "Stock");
+        stockBtn =  initButton("Stock");
         stockBtn.setBounds(0, 50, leftPanel.getBounds().width, 40);
 
-        partyBtn =  initButton(partyBtn, "Party");
+        partyBtn =  initButton("Party");
         partyBtn.setBounds(0, 120, leftPanel.getBounds().width, 40);
 
-        itemsBtn = initButton(itemsBtn, "Items");
+        itemsBtn = initButton("Items");
         itemsBtn.setBounds(0, 190, leftPanel.getBounds().width, 40);
 
-        salesBtn = initButton(salesBtn, "Sales"); // 30 gap in y
+        salesBtn = initButton("Sales"); // 30 gap in y
         salesBtn.setBounds(0, 260, leftPanel.getBounds().width, 40);
         salesBtn.setForeground(Color.BLACK);
         prevBtn = salesBtn;
@@ -115,9 +115,9 @@ public class HomeFrame extends JFrame implements ActionListener {
         leftPanel.add(salesBtn);
     }
 
-    private JButton initButton(JButton button, String buttonName){
+    private JButton initButton(String buttonName){
 
-        button = new JButton(buttonName);
+        JButton button = new JButton(buttonName);
         button.setBackground(greyPanel);
         button.setFont(new Font("Rockwell", Font.BOLD, 25));
         button.setForeground(greyFont);
@@ -138,6 +138,19 @@ public class HomeFrame extends JFrame implements ActionListener {
             // call method which will refresh the frame OR reload the
             System.out.println("Refresh btn");
             highlightBtn(refreshBtn);
+
+            String[] categories = Database.getCategories();
+
+            // for refresh (add condition to run only if the queue is not empty)
+            StockInOut.stCategoryComboBox.removeAllItems();
+            UpdateItem.updateCategoryComboBox.removeAllItems();
+            RemoveItem.removeCategoryComboBox.removeAllItems();
+
+            for(String item: categories){
+                StockInOut.stCategoryComboBox.addItem(item);
+                UpdateItem.updateCategoryComboBox.addItem(item);
+                RemoveItem.removeCategoryComboBox.addItem(item);
+            }
         }
         else if (e.getSource() == stockBtn) {
 

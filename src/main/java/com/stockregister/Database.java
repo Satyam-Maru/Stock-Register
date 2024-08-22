@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Database {
 
@@ -48,5 +45,36 @@ public class Database {
 
     protected static void prepareStatement(String query) throws SQLException{
         pst = con.prepareStatement(query);
+    }
+
+    static String[] getCategories(){
+
+        String[] categories = new String[0];
+
+        try{
+
+            String countRows = "select count(id) from category where id in (select cat_id from items where user_id = (?))";
+            Database.prepareStatement(countRows);
+            Database.pst.setInt(1, User.getUserId());
+            ResultSet rs = Database.pst.executeQuery();
+
+            if(rs.next()){
+                categories = new String[rs.getInt("count")];
+            }
+
+            String query = "select name from category where id IN (select cat_id from items where user_id = (?));";
+            Database.prepareStatement(query);
+            Database.pst.setInt(1, User.getUserId());
+            rs = Database.pst.executeQuery();
+            int i = 0;
+            while(rs.next()){
+                categories[i++] = rs.getString(1);
+            }
+
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+        return categories;
     }
 }
