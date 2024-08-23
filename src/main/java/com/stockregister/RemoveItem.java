@@ -124,9 +124,9 @@ public class RemoveItem {
             Database.pst.setInt(1, user_id);
             Database.pst.setString(2, item_name);
 
-            ResultSet rs = Database.pst.executeQuery();
+            Database.pst.executeQuery();
         }catch (SQLException e){
-            System.out.println(e.getMessage());;
+            System.out.println(e.getMessage());
         }
     }
 }

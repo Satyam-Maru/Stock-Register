@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static com.stockregister.Stock.initLabel;
@@ -12,23 +11,25 @@ import static com.stockregister.Stock.initTextField;
 
 public class AddNewItem {
 
-    protected static JPanel addItemPanel;
-    protected static JLabel itemLabel, categoryLabel, purchaseLabel, sellingLabel,
-                            priceUnitLabel, openingStockLabel, partyLabel;
-    protected static JTextField itemTF, categoryTF, purchaseTF, sellingTF, partyTF, openingStockTF;
-    protected static JButton addItemDoneBtn;
-    protected static JComboBox<String> priceUnit;
+    static JPanel addItemPanel;
+    static JLabel itemLabel, categoryLabel, purchaseLabel, sellingLabel,
+                    priceUnitLabel, openingStockLabel, partyLabel;
+    static JTextField itemTF, categoryTF, purchaseTF, sellingTF, partyTF, openingStockTF;
+    static JButton addItemDoneBtn;
+    static JComboBox<String> priceUnit;
+    static Queue queue;
 
-    protected static JPanel set_getAddItemPanel(){
+    static JPanel set_getAddItemPanel(){
         addItemPanel = new JPanel();
         // setBounds not needed as the panelStack is working in CardLayout
         addItemPanel.setLayout(null);
+        queue = new Queue();
         setAddItemLabels();
         setAddItemTextField();
         return addItemPanel;
     }
 
-    protected static void setAddItemLabels() {
+    static void setAddItemLabels() {
 
         itemLabel = initLabel("Item Name");
         itemLabel.setBounds(50, 55, 170, 30);
@@ -59,7 +60,7 @@ public class AddNewItem {
         addItemPanel.add(openingStockLabel);
     }
 
-    protected static void setAddItemTextField() {
+    static void setAddItemTextField() {
 
         itemTF = initTextField();
         itemTF.setBounds(itemLabel.getX(), itemLabel.getY() + itemLabel.getHeight() + 7, 200, 30);
@@ -106,23 +107,12 @@ public class AddNewItem {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                String query = "select insert_new_item (?, ?, ?, ?, ?, ?, ?, ?);";
-                try{
-                    Database.prepareStatement(query);
-                    Database.pst.setInt(1, User.getUserId());
-                    Database.pst.setString(2, itemTF.getText());
-                    Database.pst.setString(3, categoryTF.getText());
-                    Database.pst.setString(4, partyTF.getText());
-                    Database.pst.setDouble(5, Double.parseDouble(purchaseTF.getText()));
-                    Database.pst.setDouble(6, Double.parseDouble(sellingTF.getText()));
-                    Database.pst.setString(7, String.valueOf(priceUnit.getSelectedItem()));
-                    Database.pst.setDouble(8, Double.parseDouble(openingStockTF.getText()));
-                    ResultSet rs = Database.pst.executeQuery();
-                }catch (SQLException ex){
-                    System.out.println(ex.getMessage());
-                }
-
-//                String retrieveData = "SELECT * from "
+                queue.enqueue(new Items(
+                        itemTF.getText(), categoryTF.getText(),
+                        partyTF.getText(), (String) priceUnit.getSelectedItem(),
+                        Double.parseDouble(purchaseTF.getText()),
+                        Double.parseDouble(sellingTF.getText()),
+                        Double.parseDouble(openingStockTF.getText())));
             }
         });
         button.setFocusable(false);

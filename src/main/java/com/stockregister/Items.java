@@ -11,6 +11,22 @@ public class Items {
     static JPanel panel;
     static JTable table;
     static JScrollPane scrollPane;
+    String item_name, category_name, party_name, price_unit;
+    double purchase_price, selling_price, opening_stock;
+
+    public Items(){}
+
+    public Items(String item_name, String category_name, String party_name,
+                 String price_unit, double purchase_price, double selling_price,
+                 double opening_stock) {
+        this.item_name = item_name;
+        this.category_name = category_name;
+        this.party_name = party_name;
+        this.price_unit = price_unit;
+        this.purchase_price = purchase_price;
+        this.selling_price = selling_price;
+        this.opening_stock = opening_stock;
+    }
 
     protected void setPanel(){
         panel = new JPanel();

@@ -10,6 +10,7 @@ import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class HomeFrame extends JFrame implements ActionListener {
 
@@ -139,8 +140,8 @@ public class HomeFrame extends JFrame implements ActionListener {
             System.out.println("Refresh btn");
             highlightBtn(refreshBtn);
 
+            insert_items();
             String[] categories = Database.getCategories();
-
             // for refresh (add condition to run only if the queue is not empty)
             StockInOut.stCategoryComboBox.removeAllItems();
             UpdateItem.updateCategoryComboBox.removeAllItems();
@@ -219,5 +220,28 @@ public class HomeFrame extends JFrame implements ActionListener {
     private void showWorkPanel(String panelName){
         CardLayout cl = (CardLayout) (workPanel.getLayout());
         cl.show(workPanel, panelName);
+    }
+
+    private void insert_items(){
+
+        String query = "select insert_new_item (?, ?, ?, ?, ?, ?, ?, ?);";
+
+        while (!AddNewItem.queue.isEmpty()){
+            try{
+                Database.prepareStatement(query);
+                Items obj = AddNewItem.queue.dequeue();
+                Database.pst.setInt(1, User.getUserId());
+                Database.pst.setString(2, obj.item_name);
+                Database.pst.setString(3, obj.category_name);
+                Database.pst.setString(4, obj.party_name);
+                Database.pst.setDouble(5, obj.purchase_price);
+                Database.pst.setDouble(6, obj.selling_price);
+                Database.pst.setString(7, obj.price_unit);
+                Database.pst.setDouble(8, obj.opening_stock);
+                Database.pst.executeQuery();
+            }catch (SQLException ex){
+                System.out.println(ex.getMessage());
+            }
+        }
     }
 }

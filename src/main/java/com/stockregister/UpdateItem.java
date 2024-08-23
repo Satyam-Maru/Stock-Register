@@ -157,9 +157,9 @@ public class UpdateItem {
             Database.pst.setDouble(4, price);
             Database.pst.setDouble(5, quantity);
 
-            ResultSet rs = Database.pst.executeQuery();
+            Database.pst.executeQuery();
         }catch (SQLException e){
-            System.out.println(e.getMessage());;
+            System.out.println(e.getMessage());
         }
     }
 }

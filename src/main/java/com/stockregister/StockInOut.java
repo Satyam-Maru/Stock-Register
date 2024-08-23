@@ -181,9 +181,9 @@ public class  StockInOut {
             Database.pst.setDouble(5, sold_quantity);
             Database.pst.setDouble(6, price);
 
-            ResultSet rs = Database.pst.executeQuery();
+            Database.pst.executeQuery();
         }catch (SQLException e){
-            System.out.println(e.getMessage());;
+            System.out.println(e.getMessage());
         }
     }
 }
