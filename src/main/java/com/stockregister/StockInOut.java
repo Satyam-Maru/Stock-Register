@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 import static com.stockregister.Stock.initLabel;
 import static com.stockregister.Stock.initTextField;
@@ -126,7 +125,12 @@ public class  StockInOut {
         stockInBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("stock in btn");
+                // updates the data into database
+                stockInOut("in", User.getUserId(), stPartyTF.getText(),
+                        (String) stCategoryComboBox.getSelectedItem(),
+                        (String) stItemComboBox.getSelectedItem(),
+                        Double.parseDouble(stQuantityTF.getText()),
+                        Double.parseDouble(stPriceTF.getText()));
             }
         });
         stockInOutPanel.add(stockInBtn);
@@ -139,7 +143,11 @@ public class  StockInOut {
         stockOutBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("stock out btn");
+                stockInOut("out", User.getUserId(), stPartyTF.getText(),
+                        (String) stCategoryComboBox.getSelectedItem(),
+                        (String) stItemComboBox.getSelectedItem(),
+                        Double.parseDouble(stQuantityTF.getText()),
+                        Double.parseDouble(stPriceTF.getText()));
             }
         });
         stockInOutPanel.add(stockOutBtn);
@@ -154,5 +162,28 @@ public class  StockInOut {
         button.setFocusable(false);
 
         return button;
+    }
+
+    private static void stockInOut(String inOrOut, int user_id, String party_name, String category_name,
+                                   String item_name, double sold_quantity, double price){
+        try{
+            String query = null;
+            if(inOrOut.equals("in")){
+                query = "select stock_in(?, ?, ?, ?, ?, ?)";
+            }else if(inOrOut.equals("out")){
+                query = "select stock_out(?, ?, ?, ?, ?, ?)";
+            }
+            Database.prepareStatement(query);
+            Database.pst.setInt(1, user_id);
+            Database.pst.setString(2, party_name);
+            Database.pst.setString(3, category_name);
+            Database.pst.setString(4, item_name);
+            Database.pst.setDouble(5, sold_quantity);
+            Database.pst.setDouble(6, price);
+
+            ResultSet rs = Database.pst.executeQuery();
+        }catch (SQLException e){
+            System.out.println(e.getMessage());;
+        }
     }
 }

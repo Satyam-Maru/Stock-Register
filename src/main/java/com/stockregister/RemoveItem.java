@@ -100,7 +100,7 @@ public class RemoveItem {
         removeDoneBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("remove done btn");
+                remove_item(User.getUserId(), (String) removeItemComboBox.getSelectedItem());
             }
         });
         removePanel.add(removeDoneBtn);
@@ -115,5 +115,18 @@ public class RemoveItem {
         button.setBackground(Color.BLACK);
 
         return button;
+    }
+
+    private static void remove_item(int user_id, String item_name){
+        try{
+            String query = "select remove_item (?, ?)";
+            Database.prepareStatement(query);
+            Database.pst.setInt(1, user_id);
+            Database.pst.setString(2, item_name);
+
+            ResultSet rs = Database.pst.executeQuery();
+        }catch (SQLException e){
+            System.out.println(e.getMessage());;
+        }
     }
 }
