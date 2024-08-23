@@ -13,7 +13,7 @@ import static com.stockregister.Stock.initTextField;
 public class  StockInOut {
 
     protected static JPanel stockInOutPanel;
-    protected static JButton stockInBtn, stockOutBtn, stockInOutCategoryOkBtn;
+    protected static JButton stockInBtn, stockOutBtn;
     protected static JLabel stPartyLabel, stCategoryLabel, stItemLabel, stQuantityLabel, stPriceLabel;
     protected static JTextField stPartyTF, stQuantityTF, stPriceTF;
     protected static JComboBox<String>  stCategoryComboBox, stItemComboBox;

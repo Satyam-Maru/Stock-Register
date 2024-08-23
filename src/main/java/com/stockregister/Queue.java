@@ -59,12 +59,6 @@ public class Queue {
         return size == capacity;
     }
 
-    public void clear() {
-        front = 0;
-        rear = -1;
-        size = 0;
-    }
-
     // grow the queue by doubling its capacity
     private void grow() {
         int newCapacity = capacity * 2;
