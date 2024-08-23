@@ -58,7 +58,6 @@ public class  StockInOut {
 
         stCategoryComboBox = new JComboBox<>(Database.getCategories());
         stCategoryComboBox.setBounds(stCategoryLabel.getX(), stCategoryLabel.getY() + stCategoryLabel.getHeight() + 7, 150, 30);
-        stCategoryComboBox.setSelectedIndex(0);
         stCategoryComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

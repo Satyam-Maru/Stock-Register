@@ -151,6 +151,10 @@ public class HomeFrame extends JFrame implements ActionListener {
                 UpdateItem.updateCategoryComboBox.addItem(item);
                 RemoveItem.removeCategoryComboBox.addItem(item);
             }
+
+            Items.setJTable();
+            Party.setJTable();
+
         }
         else if (e.getSource() == stockBtn) {
 

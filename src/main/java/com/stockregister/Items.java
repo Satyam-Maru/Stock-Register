@@ -8,23 +8,14 @@ import java.sql.SQLException;
 
 public class Items {
 
-    JPanel panel;
+    static JPanel panel;
+    static JTable table;
+    static JScrollPane scrollPane;
 
     protected void setPanel(){
         panel = new JPanel();
-        panel.setBounds(140, 60, 1035, 640); // Set bounds if needed
         panel.setLayout(null);
-        panel.setBackground(Color.GREEN);
-
-        JTable table = new JTable(getTableModel());
-        table.setFont(new Font("Rockwell", Font.PLAIN, 14));
-        table.setRowHeight(20);
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(0, 0, 1035, 640);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(40);
-
+        setJTable();
         panel.add(scrollPane);
     }
 
@@ -32,7 +23,7 @@ public class Items {
         return panel;
     }
 
-    private DefaultTableModel getTableModel() {
+    private static DefaultTableModel getTableModel() {
         DefaultTableModel tableModel = new DefaultTableModel();
         String[] columnNames = {"Name", "Category", "Purchase_Price", "Selling_Price", "Price_Unit", "Quantity"}; // Modify column names as per your table
         tableModel.setColumnIdentifiers(columnNames);
@@ -66,4 +57,24 @@ public class Items {
         return tableModel;
     }
 
+    protected static void setJTable(){
+
+        if(table != null){
+            // already exists
+            table.removeAll();
+            table.setModel(getTableModel());
+            scrollPane.repaint();
+            table.repaint();
+            return;
+        }
+
+        table = new JTable(getTableModel());
+        table.setFont(new Font("Rockwell", Font.PLAIN, 14));
+        table.setRowHeight(20);
+
+        scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(0, 0, 1035, 640);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(40);
+    }
 }

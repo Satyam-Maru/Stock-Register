@@ -9,29 +9,21 @@ import java.sql.SQLException;
 public class Party {
 
     static JPanel panel;
+    static JTable table;
+    static JScrollPane scrollPane;
 
     protected void setPanel(){
         panel = new JPanel();
         panel.setLayout(null);
-        panel.setBackground(Color.PINK);
 
-        JTable table = new JTable(getTableModel());
-        table.setFont(new Font("Rockwell", Font.PLAIN, 14));
-        table.setRowHeight(20);
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(0, 0, 1035, 640);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(40);
-
-        panel.add(scrollPane);
+        setJTable();
     }
 
     protected JPanel getPanel(){
         return panel;
     }
 
-    private DefaultTableModel getTableModel() {
+    private static DefaultTableModel getTableModel() {
         DefaultTableModel tableModel = new DefaultTableModel();
         String[] columnNames = {"Name", "Purchased_Item", "Sold_Item", "Quantity", "Amount", "Date"}; // Modify column names as per your table
         tableModel.setColumnIdentifiers(columnNames);
@@ -63,5 +55,28 @@ public class Party {
             e.printStackTrace();
         }
         return tableModel;
+    }
+
+    protected static void setJTable(){
+
+        if(table != null){
+            // already exists
+            table.removeAll();
+            table.setModel(getTableModel());
+            scrollPane.repaint();
+            table.repaint();
+            return;
+        }
+
+        table = new JTable(getTableModel());
+        table.setFont(new Font("Rockwell", Font.PLAIN, 14));
+        table.setRowHeight(20);
+
+        scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(0, 0, 1035, 640);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(40);
+
+        panel.add(scrollPane);
     }
 }
