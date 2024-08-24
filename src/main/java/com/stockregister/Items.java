@@ -5,6 +5,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class Items {
 
@@ -12,7 +14,8 @@ public class Items {
     static JTable table;
     static JScrollPane scrollPane;
     String item_name, category_name, party_name, price_unit;
-    double purchase_price, selling_price, opening_stock;
+    double purchase_price, selling_price, opening_stock, current_quantity;
+    static PriorityQueue<Items> priorityQueue;
 
     public Items(){}
 
@@ -28,6 +31,17 @@ public class Items {
         this.opening_stock = opening_stock;
     }
 
+    // name, category, purchase_price, selling_price, price_unit, quantity
+    public Items(String name, String category, double purchase,
+                 double selling, String price_unit, double current_quantity){
+        this.item_name = name;
+        this.category_name = category;
+        this.purchase_price = purchase;
+        this.selling_price = selling;
+        this.price_unit = price_unit;
+        this.current_quantity = current_quantity;
+    }
+
     protected void setPanel(){
         panel = new JPanel();
         panel.setLayout(null);
@@ -37,6 +51,10 @@ public class Items {
 
     protected JPanel getPanel(){
         return panel;
+    }
+
+    public double getCurrentQuantity(){
+        return current_quantity;
     }
 
     private static DefaultTableModel getTableModel() {
@@ -56,6 +74,7 @@ public class Items {
             Database.prepareStatement(query);
             Database.pst.setInt(1, user_id);
             ResultSet rs = Database.pst.executeQuery();
+            priorityQueue = new PriorityQueue<>(Comparator.comparing(Items::getCurrentQuantity));
 
             while (rs.next()) {
                 String name = rs.getString("name");
@@ -64,9 +83,16 @@ public class Items {
                 double selling_price = rs.getDouble("selling_price");
                 String price_unit = rs.getString("price_unit");
                 double quantity = rs.getDouble("quantity");
-                // Add row to the table model
-                tableModel.addRow(new Object[]{name, category, purchase_price, selling_price, price_unit, quantity});
+
+                // add all details in priority queue
+                priorityQueue.add(new Items(name, category, purchase_price, selling_price, price_unit, quantity));
             }
+
+            // add items according to their available stock
+            while (!priorityQueue.isEmpty()){
+                tableModel.addRow(getItemArray());
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -92,5 +118,15 @@ public class Items {
         scrollPane.setBounds(0, 0, 1035, 640);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.getVerticalScrollBar().setUnitIncrement(40);
+    }
+
+    // name, category, purchase_price, selling_price, price_unit, quantity
+    public static Object[] getItemArray(){
+
+        Items item = priorityQueue.poll();
+
+        return new Object[] {item.item_name, item.category_name, item.purchase_price,
+        item.selling_price, item.price_unit, item.current_quantity};
+
     }
 }

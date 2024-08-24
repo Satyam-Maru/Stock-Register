@@ -200,15 +200,12 @@ public class HomeFrame extends JFrame implements ActionListener {
         Stock stock = new Stock();
         Party party = new Party();
         Items items = new Items();
-        Sales sales = new Sales();
 
         stock.setPanel();
         party.setPanel();
         items.setPanel();
-        sales.setPanel();
 
         // after this addition, workPanel stores the different panels
-        workPanel.add(sales.getPanel(), "Sales Panel");
         workPanel.add(stock.getPanel(), "Stock Panel");
         workPanel.add(party.getPanel(), "Party Panel");
         workPanel.add(items.getPanel(), "Items Panel");

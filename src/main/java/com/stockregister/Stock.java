@@ -14,13 +14,6 @@ public class Stock extends JFrame implements ActionListener {
     protected JButton addBtn, stockInOutBtn, removeBtn, updateBtn, prevBtn;
     // ------------------------------------------------------------------------------------------
 
-    // Variables
-    // ------------------------------------------------------------------------------------------
-    protected String item_name, category, price_unit;
-    protected double purchase_price, selling_price, MRP;
-    private final Color greyColor = new Color(139, 139, 129);
-    // ------------------------------------------------------------------------------------------
-
     // getters
     protected JPanel getPanel(){
         return stockPanel;
